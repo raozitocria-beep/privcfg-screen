@@ -1,4 +1,4 @@
-html
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,7 +31,7 @@ button {
     cursor: pointer;
 }
 
-/* NOME */
+/* TELA DE NOME */
 
 .name-screen {
     position: fixed;
@@ -50,7 +50,7 @@ button {
     border: 1px solid #282a35;
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 25px 80px rgba(0,0,0,.55);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, .55);
 }
 
 .name-logo {
@@ -97,7 +97,7 @@ button {
     height: 48px;
     border: none;
     border-radius: 10px;
-    color: white;
+    color: #fff;
     background: #7568ff;
     font-weight: 700;
     font-size: 15px;
@@ -173,7 +173,7 @@ header {
     border: 1px solid #242631;
     border-radius: 16px;
     padding: 22px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.18);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .18);
 }
 
 .card + .card {
@@ -199,7 +199,7 @@ header {
     height: 45px;
     padding: 0 13px;
     background: #181a21;
-    color: white;
+    color: #fff;
     border: 1px solid #2b2d37;
     border-radius: 9px;
     outline: none;
@@ -223,7 +223,7 @@ header {
     padding: 0 18px;
     border: none;
     border-radius: 9px;
-    color: white;
+    color: #fff;
     background: #20222b;
     font-weight: 700;
 }
@@ -249,7 +249,7 @@ header {
     cursor: not-allowed;
 }
 
-/* ROOM */
+/* SALA */
 
 .room-code {
     display: flex;
@@ -268,7 +268,7 @@ header {
     letter-spacing: 2px;
 }
 
-/* MEMBERS */
+/* MEMBROS */
 
 .members {
     display: flex;
@@ -334,7 +334,7 @@ header {
     border: none;
     border-radius: 7px;
     padding: 8px 10px;
-    color: white;
+    color: #fff;
     background: #252732;
     font-size: 11px;
     font-weight: 700;
@@ -348,7 +348,7 @@ header {
     background: #43232a;
 }
 
-/* SCREEN */
+/* TELA */
 
 .screen-container {
     position: relative;
@@ -406,7 +406,7 @@ header {
     color: #ff6878;
 }
 
-/* PERMISSION */
+/* PERMISSÃO */
 
 .permission-box {
     display: none;
@@ -426,8 +426,6 @@ header {
 </head>
 
 <body>
-
-<!-- TELA DE NOME -->
 
 <div id="nameScreen" class="name-screen">
     <div class="name-card">
@@ -459,8 +457,6 @@ header {
     </div>
 </div>
 
-<!-- HEADER -->
-
 <header>
 
     <div class="logo">
@@ -470,7 +466,7 @@ header {
     <div class="header-right">
 
         <div id="connectionStatus" class="connection">
-            ● Conectando...
+            ● Conectando
         </div>
 
         <div id="headerUserName" class="user-name">
@@ -481,17 +477,11 @@ header {
 
 </header>
 
-<!-- CONTEÚDO -->
-
 <div class="container">
 
     <div class="grid">
 
-        <!-- ESQUERDA -->
-
         <div>
-
-            <!-- SALA -->
 
             <div class="card">
 
@@ -523,20 +513,30 @@ header {
                     id="roomPassword"
                     class="input"
                     type="password"
-                    placeholder="Senha da sala (opcional)"
+                    placeholder="Senha da sala"
                 >
 
                 <div class="buttons">
 
-                    <button id="createRoom" class="btn btn-primary">
+                    <button
+                        id="createRoom"
+                        class="btn btn-primary"
+                    >
                         Criar sala
                     </button>
 
-                    <button id="joinRoom" class="btn">
+                    <button
+                        id="joinRoom"
+                        class="btn"
+                    >
                         Entrar na sala
                     </button>
 
-                    <button id="leaveRoom" class="btn btn-danger" disabled>
+                    <button
+                        id="leaveRoom"
+                        class="btn btn-danger"
+                        disabled
+                    >
                         Sair
                     </button>
 
@@ -547,8 +547,6 @@ header {
                 </div>
 
             </div>
-
-            <!-- TRANSMISSÃO -->
 
             <div class="card">
 
@@ -591,8 +589,6 @@ header {
 
             </div>
 
-            <!-- TELA -->
-
             <div class="card">
 
                 <div class="card-title">
@@ -616,13 +612,11 @@ header {
                         id="screenPlaceholder"
                         class="screen-placeholder"
                     >
-
                         <h2>Nenhuma transmissão</h2>
 
                         <p>
                             Entre em uma sala e aguarde um transmissor iniciar a transmissão.
                         </p>
-
                     </div>
 
                 </div>
@@ -631,11 +625,7 @@ header {
 
         </div>
 
-        <!-- DIREITA -->
-
         <div>
-
-            <!-- SALA ATUAL -->
 
             <div class="card">
 
@@ -662,8 +652,6 @@ header {
                 </div>
 
             </div>
-
-            <!-- MEMBROS -->
 
             <div class="card">
 
@@ -692,99 +680,546 @@ header {
 </div>
 
 <script>
-
-/* =========================
-   SOCKET
-========================= */
-
 const socket = io();
 
-/* =========================
-   ELEMENTOS
-========================= */
+const nameScreen = document.getElementById("nameScreen");
+const userNameInput = document.getElementById("userNameInput");
+const enterSite = document.getElementById("enterSite");
+const nameError = document.getElementById("nameError");
 
-const nameScreen =
-    document.getElementById("nameScreen");
+const headerUserName = document.getElementById("headerUserName");
+const connectionStatus = document.getElementById("connectionStatus");
 
-const userNameInput =
-    document.getElementById("userNameInput");
+const roomName = document.getElementById("roomName");
+const roomCodeInput = document.getElementById("roomCodeInput");
+const roomPassword = document.getElementById("roomPassword");
 
-const enterSite =
-    document.getElementById("enterSite");
+const createRoomButton = document.getElementById("createRoom");
+const joinRoomButton = document.getElementById("joinRoom");
+const leaveRoomButton = document.getElementById("leaveRoom");
 
-const nameError =
-    document.getElementById("nameError");
+const currentRoomCode = document.getElementById("currentRoomCode");
+const currentRoomName = document.getElementById("currentRoomName");
+const membersElement = document.getElementById("members");
+const roomStatus = document.getElementById("roomStatus");
 
-const headerUserName =
-    document.getElementById("headerUserName");
+const startSharingButton = document.getElementById("startSharing");
+const stopSharingButton = document.getElementById("stopSharing");
+const sharingStatus = document.getElementById("sharingStatus");
+const permissionBox = document.getElementById("permissionBox");
 
-const connectionStatus =
-    document.getElementById("connectionStatus");
-
-const roomName =
-    document.getElementById("roomName");
-
-const roomCodeInput =
-    document.getElementById("roomCodeInput");
-
-const roomPassword =
-    document.getElementById("roomPassword");
-
-const createRoomButton =
-    document.getElementById("createRoom");
-
-const joinRoomButton =
-    document.getElementById("joinRoom");
-
-const leaveRoomButton =
-    document.getElementById("leaveRoom");
-
-const currentRoomCode =
-    document.getElementById("currentRoomCode");
-
-const currentRoomName =
-    document.getElementById("currentRoomName");
-
-const membersElement =
-    document.getElementById("members");
-
-const roomStatus =
-    document.getElementById("roomStatus");
-
-const startSharingButton =
-    document.getElementById("startSharing");
-
-const stopSharingButton =
-    document.getElementById("stopSharing");
-
-const sharingStatus =
-    document.getElementById("sharingStatus");
-
-const permissionBox =
-    document.getElementById("permissionBox");
-
-const remoteVideo =
-    document.getElementById("remoteVideo");
-
-const screenPlaceholder =
-    document.getElementById("screenPlaceholder");
-
-/* =========================
-   ESTADO
-========================= */
+const remoteVideo = document.getElementById("remoteVideo");
+const screenPlaceholder = document.getElementById("screenPlaceholder");
 
 let userName = "";
 let currentRoom = null;
 let myRole = "member";
-
 let localStream = null;
 let isSharing = false;
 
 const peers = new Map();
 
-/* =========================
-   PERMISSÃO
-========================= */
+/* CONEXÃO */
+
+socket.on("connect", () => {
+    connectionStatus.textContent = "● Online";
+    connectionStatus.style.color = "#62dc9b";
+});
+
+socket.on("disconnect", () => {
+    connectionStatus.textContent = "● Desconectado";
+    connectionStatus.style.color = "#ff6878";
+});
+
+/* NOME */
+
+function enterWithName() {
+    const name = userNameInput.value.trim();
+
+    if (!name) {
+        nameError.textContent = "Digite seu nome.";
+        return;
+    }
+
+    if (name.length < 2) {
+        nameError.textContent = "Use pelo menos 2 caracteres.";
+        return;
+    }
+
+    socket.emit("set-name", name, result => {
+
+        if (!result || !result.ok) {
+            nameError.textContent =
+                result && result.error
+                    ? result.error
+                    : "Não foi possível definir seu nome.";
+            return;
+        }
+
+        userName = result.name;
+
+        headerUserName.textContent =
+            "👤 " + userName;
+
+        nameScreen.style.display = "none";
+
+        roomStatus.textContent =
+            "Olá, " + userName + "! Crie ou entre em uma sala.";
+    });
+}
+
+enterSite.addEventListener("click", enterWithName);
+
+userNameInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        enterWithName();
+    }
+});
+
+/* CRIAR SALA */
+
+createRoomButton.addEventListener("click", () => {
+
+    const name =
+        roomName.value.trim() ||
+        userName + "'s Room";
+
+    const password =
+        roomPassword.value.trim();
+
+    socket.emit(
+        "create-room",
+        {
+            name: name,
+            private: password.length > 0,
+            password: password
+        },
+        result => {
+
+            if (!result || !result.ok) {
+
+                roomStatus.textContent =
+                    result && result.error
+                        ? result.error
+                        : "Erro ao criar sala.";
+
+                roomStatus.className =
+                    "status error";
+
+                return;
+            }
+
+            enterRoom(result.room);
+        }
+    );
+});
+
+/* ENTRAR NA SALA */
+
+joinRoomButton.addEventListener("click", () => {
+
+    const code =
+        roomCodeInput.value.trim().toUpperCase();
+
+    if (!code) {
+
+        roomStatus.textContent =
+            "Digite o código da sala.";
+
+        roomStatus.className =
+            "status error";
+
+        return;
+    }
+
+    socket.emit(
+        "join-room",
+        {
+            code: code,
+            password: roomPassword.value.trim()
+        },
+        result => {
+
+            if (!result || !result.ok) {
+
+                roomStatus.textContent =
+                    result && result.error
+                        ? result.error
+                        : "Não foi possível entrar na sala.";
+
+                roomStatus.className =
+                    "status error";
+
+                return;
+            }
+
+            enterRoom(result.room);
+        }
+    );
+});
+
+/* ENTRAR NA SALA */
+
+function enterRoom(room) {
+
+    currentRoom = room;
+
+    currentRoomCode.textContent =
+        room.code;
+
+    currentRoomName.textContent =
+        room.name;
+
+    roomStatus.textContent =
+        "Conectado à sala " + room.code + ".";
+
+    roomStatus.className =
+        "status success";
+
+    leaveRoomButton.disabled = false;
+
+    const me =
+        room.members.find(
+            member => member.id === socket.id
+        );
+
+    if (me) {
+        myRole =
+            me.role ||
+            (me.owner ? "owner" : "member");
+    } else {
+        myRole =
+            room.owner === socket.id
+                ? "owner"
+                : "member";
+    }
+
+    updateMembers(room.members);
+    updateTransmissionUI();
+}
+
+/* ATUALIZAÇÃO DA SALA */
+
+socket.on("room-updated", room => {
+
+    currentRoom = room;
+
+    currentRoomCode.textContent =
+        room.code;
+
+    currentRoomName.textContent =
+        room.name;
+
+    const me =
+        room.members.find(
+            member => member.id === socket.id
+        );
+
+    if (me) {
+        myRole =
+            me.role ||
+            (me.owner ? "owner" : "member");
+    } else {
+        myRole =
+            room.owner === socket.id
+                ? "owner"
+                : "member";
+    }
+
+    updateMembers(room.members);
+    updateTransmissionUI();
+});
+
+/* MEMBROS */
+
+function updateMembers(members) {
+
+    membersElement.innerHTML = "";
+
+    if (!members.length) {
+
+        const empty =
+            document.createElement("div");
+
+        empty.className = "member";
+        empty.textContent = "Nenhum membro.";
+
+        membersElement.appendChild(empty);
+
+        return;
+    }
+
+    members.forEach(member => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "member";
+
+        if (member.id === socket.id) {
+            div.classList.add("me");
+        }
+
+        const info =
+            document.createElement("div");
+
+        info.className = "member-info";
+
+        const name =
+            document.createElement("div");
+
+        name.className = "member-name";
+
+        const role =
+            member.role ||
+            (member.owner ? "owner" : "member");
+
+        if (role === "owner") {
+
+            name.textContent =
+                member.id === socket.id
+                    ? "👑 " + member.name + " • Você"
+                    : "👑 " + member.name;
+
+        } else if (role === "transmitter") {
+
+            name.textContent =
+                member.id === socket.id
+                    ? "📺 " + member.name + " • Você"
+                    : "📺 " + member.name;
+
+        } else {
+
+            name.textContent =
+                member.id === socket.id
+                    ? "👤 " + member.name + " • Você"
+                    : "👤 " + member.name;
+        }
+
+        const roleText =
+            document.createElement("div");
+
+        roleText.className = "member-role";
+
+        if (role === "owner") {
+
+            roleText.textContent = "Dono";
+            roleText.classList.add("role-owner");
+
+        } else if (role === "transmitter") {
+
+            roleText.textContent = "Transmissor";
+            roleText.classList.add("role-transmitter");
+
+        } else {
+
+            roleText.textContent = "Membro";
+            roleText.classList.add("role-member");
+        }
+
+        info.appendChild(name);
+        info.appendChild(roleText);
+
+        div.appendChild(info);
+
+        /*
+         * O botão aparece somente
+         * para o dono da sala.
+         */
+
+        if (
+            myRole === "owner" &&
+            member.id !== socket.id &&
+            role !== "owner"
+        ) {
+
+            const actions =
+                document.createElement("div");
+
+            actions.className =
+                "member-actions";
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "role-btn";
+
+            if (role === "transmitter") {
+
+                button.textContent =
+                    "Remover cargo";
+
+                button.classList.add("remove");
+
+                button.addEventListener(
+                    "click",
+                    () => changeRole(
+                        member.id,
+                        "member"
+                    )
+                );
+
+            } else {
+
+                button.textContent =
+                    "📺 Dar cargo";
+
+                button.addEventListener(
+                    "click",
+                    () => changeRole(
+                        member.id,
+                        "transmitter"
+                    )
+                );
+            }
+
+            actions.appendChild(button);
+            div.appendChild(actions);
+        }
+
+        membersElement.appendChild(div);
+    });
+}
+
+/* ALTERAR CARGO */
+
+function changeRole(targetId, role) {
+
+    if (!currentRoom) {
+        alert("Você não está em uma sala.");
+        return;
+    }
+
+    if (myRole !== "owner") {
+        alert("Somente o dono da sala pode alterar cargos.");
+        return;
+    }
+
+    socket.emit(
+        "set-member-role",
+        {
+            targetId: targetId,
+            role: role
+        },
+        result => {
+
+            if (!result || !result.ok) {
+
+                alert(
+                    result && result.error
+                        ? result.error
+                        : "Erro ao alterar o cargo."
+                );
+
+                return;
+            }
+
+            if (currentRoom && currentRoom.members) {
+
+                const member =
+                    currentRoom.members.find(
+                        item => item.id === targetId
+                    );
+
+                if (member) {
+                    member.role = role;
+                }
+
+                updateMembers(
+                    currentRoom.members
+                );
+            }
+
+            sharingStatus.textContent =
+                role === "transmitter"
+                    ? "📺 Cargo concedido com sucesso."
+                    : "Cargo removido com sucesso.";
+
+            sharingStatus.className =
+                "status success";
+        }
+    );
+}
+
+/* CARGO ATUALIZADO */
+
+socket.on("role-updated", data => {
+
+    if (!data || data.targetId !== socket.id) {
+        return;
+    }
+
+    myRole =
+        data.role || "member";
+
+    updateTransmissionUI();
+
+    if (myRole === "transmitter") {
+
+        sharingStatus.textContent =
+            "📺 Você recebeu o cargo de transmissor.";
+
+        sharingStatus.className =
+            "status success";
+
+    } else {
+
+        sharingStatus.textContent =
+            "Seu cargo de transmissor foi removido.";
+
+        sharingStatus.className =
+            "status error";
+    }
+});
+
+/* DONO ALTERADO */
+
+socket.on("owner-changed", data => {
+
+    if (!currentRoom || !data) {
+        return;
+    }
+
+    currentRoom.owner =
+        data.owner;
+
+    if (data.owner === socket.id) {
+        myRole = "owner";
+    }
+
+    updateMembers(
+        currentRoom.members || []
+    );
+
+    updateTransmissionUI();
+});
+
+/* MEMBRO ENTROU */
+
+socket.on("member-joined", member => {
+
+    console.log(
+        member.name + " entrou na sala."
+    );
+});
+
+/* MEMBRO SAIU */
+
+socket.on("member-left", member => {
+
+    const peer =
+        peers.get(member.id);
+
+    if (peer) {
+
+        peer.close();
+
+        peers.delete(member.id);
+    }
+});
+
+/* PERMISSÃO DE TRANSMISSÃO */
 
 function canTransmit() {
 
@@ -792,7 +1227,6 @@ function canTransmit() {
         myRole === "owner" ||
         myRole === "transmitter"
     );
-
 }
 
 function updateTransmissionUI() {
@@ -812,717 +1246,9 @@ function updateTransmissionUI() {
         "show",
         !!currentRoom && !allowed
     );
-
-    if (!currentRoom) {
-
-        sharingStatus.textContent =
-            "Aguardando transmissão.";
-
-        return;
-    }
-
-    if (myRole === "owner") {
-
-        sharingStatus.textContent =
-            "👑 Você é o dono da sala e pode transmitir.";
-
-    } else if (myRole === "transmitter") {
-
-        sharingStatus.textContent =
-            "📺 Você possui o cargo de transmissor.";
-
-    } else {
-
-        sharingStatus.textContent =
-            "Aguardando um transmissor iniciar a transmissão.";
-
-    }
-
-    sharingStatus.className =
-        "status";
 }
 
-/* =========================
-   CONEXÃO
-========================= */
-
-socket.on("connect", () => {
-
-    connectionStatus.textContent =
-        "● Online";
-
-    connectionStatus.style.color =
-        "#62dc9b";
-
-});
-
-socket.on("disconnect", () => {
-
-    connectionStatus.textContent =
-        "● Desconectado";
-
-    connectionStatus.style.color =
-        "#ff6878";
-
-});
-
-/* =========================
-   NOME
-========================= */
-
-function enterWithName() {
-
-    const name =
-        userNameInput.value.trim();
-
-    if (!name) {
-
-        nameError.textContent =
-            "Digite seu nome.";
-
-        userNameInput.focus();
-
-        return;
-    }
-
-    if (name.length < 2) {
-
-        nameError.textContent =
-            "Use pelo menos 2 caracteres.";
-
-        return;
-    }
-
-    socket.emit(
-        "set-name",
-        name,
-        (result) => {
-
-            if (!result || !result.ok) {
-
-                nameError.textContent =
-                    result?.error ||
-                    "Não foi possível definir seu nome.";
-
-                return;
-            }
-
-            userName =
-                result.name;
-
-            headerUserName.textContent =
-                `👤 ${userName}`;
-
-            nameScreen.style.display =
-                "none";
-
-            roomStatus.textContent =
-                `Olá, ${userName}! Crie ou entre em uma sala.`;
-
-        }
-    );
-}
-
-enterSite.addEventListener(
-    "click",
-    enterWithName
-);
-
-userNameInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (event.key === "Enter") {
-            enterWithName();
-        }
-
-    }
-);
-
-/* =========================
-   CRIAR SALA
-========================= */
-
-createRoomButton.addEventListener(
-    "click",
-    () => {
-
-        const name =
-            roomName.value.trim() ||
-            `${userName}'s Room`;
-
-        const password =
-            roomPassword.value.trim();
-
-        socket.emit(
-            "create-room",
-            {
-                name,
-                private: password.length > 0,
-                password
-            },
-            result => {
-
-                if (!result || !result.ok) {
-
-                    roomStatus.textContent =
-                        result?.error ||
-                        "Erro ao criar sala.";
-
-                    roomStatus.className =
-                        "status error";
-
-                    return;
-                }
-
-                enterRoom(result.room);
-            }
-        );
-    }
-);
-
-/* =========================
-   ENTRAR NA SALA
-========================= */
-
-joinRoomButton.addEventListener(
-    "click",
-    () => {
-
-        const code =
-            roomCodeInput.value
-                .trim()
-                .toUpperCase();
-
-        if (!code) {
-
-            roomStatus.textContent =
-                "Digite o código da sala.";
-
-            roomStatus.className =
-                "status error";
-
-            return;
-        }
-
-        socket.emit(
-            "join-room",
-            {
-                code,
-                password:
-                    roomPassword.value.trim()
-            },
-            result => {
-
-                if (!result || !result.ok) {
-
-                    roomStatus.textContent =
-                        result?.error ||
-                        "Não foi possível entrar na sala.";
-
-                    roomStatus.className =
-                        "status error";
-
-                    return;
-                }
-
-                enterRoom(result.room);
-            }
-        );
-    }
-);
-
-/* =========================
-   ENTRAR NA SALA
-========================= */
-
-function enterRoom(room) {
-
-    currentRoom =
-        room;
-
-    currentRoomCode.textContent =
-        room.code;
-
-    currentRoomName.textContent =
-        room.name;
-
-    roomStatus.textContent =
-        `Conectado à sala ${room.code}.`;
-
-    roomStatus.className =
-        "status success";
-
-    leaveRoomButton.disabled =
-        false;
-
-    const me =
-        room.members?.find(
-            member =>
-                member.id === socket.id
-        );
-
-    if (me) {
-
-        myRole =
-            me.role ||
-            (me.owner ? "owner" : "member");
-
-    } else {
-
-        myRole =
-            room.owner === socket.id
-                ? "owner"
-                : "member";
-    }
-
-    updateMembers(
-        room.members || []
-    );
-
-    updateTransmissionUI();
-}
-
-/* =========================
-   SALA ATUALIZADA
-========================= */
-
-socket.on(
-    "room-updated",
-    room => {
-
-        if (!currentRoom)
-            return;
-
-        currentRoom =
-            room;
-
-        const me =
-            room.members?.find(
-                member =>
-                    member.id === socket.id
-            );
-
-        if (me) {
-
-            myRole =
-                me.role ||
-                (me.owner ? "owner" : "member");
-
-        } else {
-
-            myRole =
-                room.owner === socket.id
-                    ? "owner"
-                    : "member";
-        }
-
-        currentRoomCode.textContent =
-            room.code;
-
-        currentRoomName.textContent =
-            room.name;
-
-        updateMembers(
-            room.members || []
-        );
-
-        updateTransmissionUI();
-    }
-);
-
-/* =========================
-   MEMBROS
-========================= */
-
-function updateMembers(members) {
-
-    membersElement.innerHTML =
-        "";
-
-    if (!members.length) {
-
-        const empty =
-            document.createElement("div");
-
-        empty.className =
-            "member";
-
-        empty.textContent =
-            "Nenhum membro.";
-
-        membersElement.appendChild(
-            empty
-        );
-
-        return;
-    }
-
-    members.forEach(
-        member => {
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "member";
-
-            if (
-                member.id === socket.id
-            ) {
-
-                div.classList.add("me");
-            }
-
-            const info =
-                document.createElement("div");
-
-            info.className =
-                "member-info";
-
-            const name =
-                document.createElement("div");
-
-            name.className =
-                "member-name";
-
-            const role =
-                member.role ||
-                (
-                    member.owner
-                        ? "owner"
-                        : "member"
-                );
-
-            if (role === "owner") {
-
-                name.textContent =
-                    member.id === socket.id
-                        ? `👑 ${member.name} • Você`
-                        : `👑 ${member.name}`;
-
-            } else if (
-                role === "transmitter"
-            ) {
-
-                name.textContent =
-                    member.id === socket.id
-                        ? `📺 ${member.name} • Você`
-                        : `📺 ${member.name}`;
-
-            } else {
-
-                name.textContent =
-                    member.id === socket.id
-                        ? `👤 ${member.name} • Você`
-                        : `👤 ${member.name}`;
-            }
-
-            const roleText =
-                document.createElement("div");
-
-            roleText.className =
-                "member-role";
-
-            if (role === "owner") {
-
-                roleText.textContent =
-                    "Dono";
-
-                roleText.classList.add(
-                    "role-owner"
-                );
-
-            } else if (
-                role === "transmitter"
-            ) {
-
-                roleText.textContent =
-                    "Transmissor";
-
-                roleText.classList.add(
-                    "role-transmitter"
-                );
-
-            } else {
-
-                roleText.textContent =
-                    "Membro";
-
-                roleText.classList.add(
-                    "role-member"
-                );
-            }
-
-            info.appendChild(name);
-            info.appendChild(roleText);
-
-            div.appendChild(info);
-
-            /*
-             * SOMENTE O DONO
-             * PODE ALTERAR CARGOS.
-             */
-
-            if (
-                myRole === "owner" &&
-                member.id !== socket.id &&
-                role !== "owner"
-            ) {
-
-                const actions =
-                    document.createElement("div");
-
-                actions.className =
-                    "member-actions";
-
-                const button =
-                    document.createElement("button");
-
-                button.className =
-                    "role-btn";
-
-                if (
-                    role === "transmitter"
-                ) {
-
-                    button.textContent =
-                        "Remover cargo";
-
-                    button.classList.add(
-                        "remove"
-                    );
-
-                    button.onclick =
-                        () => {
-
-                            changeRole(
-                                member.id,
-                                "member"
-                            );
-
-                        };
-
-                } else {
-
-                    button.textContent =
-                        "📺 Dar cargo";
-
-                    button.onclick =
-                        () => {
-
-                            changeRole(
-                                member.id,
-                                "transmitter"
-                            );
-
-                        };
-                }
-
-                actions.appendChild(
-                    button
-                );
-
-                div.appendChild(
-                    actions
-                );
-            }
-
-            membersElement.appendChild(
-                div
-            );
-        }
-    );
-}
-
-/* =========================
-   ALTERAR CARGO
-========================= */
-
-function changeRole(
-    targetId,
-    role
-) {
-
-    if (!currentRoom) {
-
-        alert(
-            "Você não está em uma sala."
-        );
-
-        return;
-    }
-
-    if (myRole !== "owner") {
-
-        alert(
-            "Somente o dono da sala pode alterar cargos."
-        );
-
-        return;
-    }
-
-    socket.emit(
-        "set-member-role",
-        {
-            targetId: targetId,
-            role: role
-        },
-        result => {
-
-            if (!result || !result.ok) {
-
-                alert(
-                    result?.error ||
-                    "Erro ao alterar o cargo."
-                );
-
-                return;
-            }
-
-            /*
-             * Atualiza imediatamente
-             * no navegador do dono.
-             */
-
-            if (currentRoom.members) {
-
-                const member =
-                    currentRoom.members.find(
-                        item =>
-                            item.id === targetId
-                    );
-
-                if (member) {
-
-                    member.role =
-                        role;
-                }
-
-                updateMembers(
-                    currentRoom.members
-                );
-            }
-
-            sharingStatus.textContent =
-                role === "transmitter"
-                    ? "📺 Cargo concedido com sucesso."
-                    : "Cargo removido com sucesso.";
-
-            sharingStatus.className =
-                "status success";
-        }
-    );
-}
-
-/* =========================
-   CARGO ATUALIZADO
-========================= */
-
-socket.on(
-    "role-updated",
-    data => {
-
-        if (!data)
-            return;
-
-        if (
-            data.targetId !== socket.id
-        ) {
-            return;
-        }
-
-        myRole =
-            data.role || "member";
-
-        updateTransmissionUI();
-
-        if (
-            myRole === "transmitter"
-        ) {
-
-            sharingStatus.textContent =
-                "📺 Você recebeu o cargo de transmissor!";
-
-            sharingStatus.className =
-                "status success";
-
-        } else {
-
-            sharingStatus.textContent =
-                "Seu cargo de transmissor foi removido.";
-
-            sharingStatus.className =
-                "status error";
-        }
-    }
-);
-
-/* =========================
-   DONO ALTERADO
-========================= */
-
-socket.on(
-    "owner-changed",
-    ({ owner }) => {
-
-        if (!currentRoom)
-            return;
-
-        currentRoom.owner =
-            owner;
-
-        if (
-            owner === socket.id
-        ) {
-
-            myRole =
-                "owner";
-        }
-
-        updateTransmissionUI();
-    }
-);
-
-/* =========================
-   MEMBRO ENTROU
-========================= */
-
-socket.on(
-    "member-joined",
-    member => {
-
-        console.log(
-            `${member.name} entrou na sala.`
-        );
-    }
-);
-
-/* =========================
-   MEMBRO SAIU
-========================= */
-
-socket.on(
-    "member-left",
-    member => {
-
-        const peer =
-            peers.get(member.id);
-
-        if (peer) {
-
-            peer.close();
-
-            peers.delete(
-                member.id
-            );
-        }
-    }
-);
-
-/* =========================
-   SAIR
-========================= */
+/* SAIR */
 
 leaveRoomButton.addEventListener(
     "click",
@@ -1531,16 +1257,15 @@ leaveRoomButton.addEventListener(
 
 function leaveRoom() {
 
-    if (!currentRoom)
+    if (!currentRoom) {
         return;
+    }
 
     if (isSharing) {
         stopSharing();
     }
 
-    socket.emit(
-        "leave-room"
-    );
+    socket.emit("leave-room");
 
     currentRoom = null;
     myRole = "member";
@@ -1570,28 +1295,20 @@ function leaveRoom() {
         "show"
     );
 
-    remoteVideo.srcObject =
-        null;
-
-    remoteVideo.style.display =
-        "none";
+    remoteVideo.srcObject = null;
+    remoteVideo.style.display = "none";
 
     screenPlaceholder.style.display =
         "block";
 
-    screenPlaceholder.innerHTML = `
-        <h2>Nenhuma transmissão</h2>
-        <p>
-            Entre em uma sala e aguarde um transmissor iniciar a transmissão.
-        </p>
-    `;
+    screenPlaceholder.innerHTML =
+        "<h2>Nenhuma transmissão</h2>" +
+        "<p>Aguarde um transmissor iniciar a transmissão.</p>";
 
     updateMembers([]);
 }
 
-/* =========================
-   INICIAR TRANSMISSÃO
-========================= */
+/* COMPARTILHAR TELA */
 
 startSharingButton.addEventListener(
     "click",
@@ -1623,8 +1340,7 @@ startSharingButton.addEventListener(
                     audio: true
                 });
 
-            isSharing =
-                true;
+            isSharing = true;
 
             startSharingButton.disabled =
                 true;
@@ -1642,23 +1358,21 @@ startSharingButton.addEventListener(
                 "start-sharing"
             );
 
-            const track =
+            const videoTrack =
                 localStream.getVideoTracks()[0];
 
-            if (track) {
+            if (videoTrack) {
 
-                track.addEventListener(
+                videoTrack.addEventListener(
                     "ended",
                     stopSharing
                 );
             }
 
-            currentRoom.members?.forEach(
+            currentRoom.members.forEach(
                 member => {
 
-                    if (
-                        member.id !== socket.id
-                    ) {
+                    if (member.id !== socket.id) {
 
                         createOfferFor(
                             member.id
@@ -1680,9 +1394,7 @@ startSharingButton.addEventListener(
     }
 );
 
-/* =========================
-   PARAR TRANSMISSÃO
-========================= */
+/* PARAR TRANSMISSÃO */
 
 stopSharingButton.addEventListener(
     "click",
@@ -1691,28 +1403,23 @@ stopSharingButton.addEventListener(
 
 function stopSharing() {
 
-    if (!isSharing)
+    if (!isSharing) {
         return;
+    }
 
-    isSharing =
-        false;
+    isSharing = false;
 
     if (localStream) {
 
         localStream
             .getTracks()
-            .forEach(
-                track =>
-                    track.stop()
-            );
+            .forEach(track => track.stop());
 
-        localStream =
-            null;
+        localStream = null;
     }
 
     peers.forEach(
-        peer =>
-            peer.close()
+        peer => peer.close()
     );
 
     peers.clear();
@@ -1720,6 +1427,9 @@ function stopSharing() {
     socket.emit(
         "stop-sharing"
     );
+
+    stopSharingButton.disabled =
+        true;
 
     updateTransmissionUI();
 
@@ -1730,17 +1440,17 @@ function stopSharing() {
         "status";
 }
 
-/* =========================
-   TRANSMISSÃO INICIADA
-========================= */
+/* TRANSMISSÃO INICIADA */
 
 socket.on(
     "screen-sharing-started",
-    ({ hostId, hostName }) => {
+    data => {
 
-        if (
-            hostId === socket.id
-        ) {
+        if (!data) {
+            return;
+        }
+
+        if (data.hostId === socket.id) {
 
             sharingStatus.textContent =
                 "🔴 Sua tela está sendo transmitida.";
@@ -1748,12 +1458,13 @@ socket.on(
         } else {
 
             sharingStatus.textContent =
-                `🔴 ${hostName || "Um membro"} iniciou a transmissão.`;
+                "🔴 " +
+                (data.hostName || "Um membro") +
+                " iniciou a transmissão.";
 
-            screenPlaceholder.innerHTML = `
-                <h2>Conectando à transmissão...</h2>
-                <p>Aguarde alguns segundos.</p>
-            `;
+            screenPlaceholder.innerHTML =
+                "<h2>Conectando à transmissão</h2>" +
+                "<p>Aguarde alguns segundos.</p>";
         }
 
         sharingStatus.className =
@@ -1761,9 +1472,7 @@ socket.on(
     }
 );
 
-/* =========================
-   TRANSMISSÃO PARADA
-========================= */
+/* TRANSMISSÃO PARADA */
 
 socket.on(
     "screen-sharing-stopped",
@@ -1775,42 +1484,34 @@ socket.on(
         sharingStatus.className =
             "status";
 
-        remoteVideo.srcObject =
-            null;
-
-        remoteVideo.style.display =
-            "none";
+        remoteVideo.srcObject = null;
+        remoteVideo.style.display = "none";
 
         screenPlaceholder.style.display =
             "block";
 
-        screenPlaceholder.innerHTML = `
-            <h2>Nenhuma transmissão</h2>
-            <p>
-                Aguarde um transmissor iniciar a transmissão.
-            </p>
-        `;
+        screenPlaceholder.innerHTML =
+            "<h2>Nenhuma transmissão</h2>" +
+            "<p>Aguarde um transmissor iniciar a transmissão.</p>";
 
         peers.forEach(
-            peer =>
-                peer.close()
+            peer => peer.close()
         );
 
         peers.clear();
     }
 );
 
-/* =========================
-   WEBRTC
-========================= */
+/* WEBRTC */
 
 function createPeer(targetId) {
 
     const existing =
         peers.get(targetId);
 
-    if (existing)
+    if (existing) {
         return existing;
+    }
 
     const peer =
         new RTCPeerConnection({
@@ -1834,20 +1535,17 @@ function createPeer(targetId) {
     peer.onicecandidate =
         event => {
 
-            if (
-                event.candidate
-            ) {
-
-                socket.emit(
-                    "webrtc-ice-candidate",
-                    {
-                        target:
-                            targetId,
-                        candidate:
-                            event.candidate
-                    }
-                );
+            if (!event.candidate) {
+                return;
             }
+
+            socket.emit(
+                "webrtc-ice-candidate",
+                {
+                    target: targetId,
+                    candidate: event.candidate
+                }
+            );
         };
 
     peer.ontrack =
@@ -1856,8 +1554,9 @@ function createPeer(targetId) {
             const stream =
                 event.streams[0];
 
-            if (!stream)
+            if (!stream) {
                 return;
+            }
 
             remoteVideo.srcObject =
                 stream;
@@ -1894,9 +1593,9 @@ function createPeer(targetId) {
     return peer;
 }
 
-async function createOfferFor(
-    targetId
-) {
+/* CRIAR OFERTA */
+
+async function createOfferFor(targetId) {
 
     try {
 
@@ -1907,25 +1606,22 @@ async function createOfferFor(
 
             localStream
                 .getTracks()
-                .forEach(
-                    track => {
+                .forEach(track => {
 
-                        const exists =
-                            peer.getSenders()
-                                .some(
-                                    sender =>
-                                        sender.track === track
-                                );
+                    const exists =
+                        peer.getSenders().some(
+                            sender =>
+                                sender.track === track
+                        );
 
-                        if (!exists) {
+                    if (!exists) {
 
-                            peer.addTrack(
-                                track,
-                                localStream
-                            );
-                        }
+                        peer.addTrack(
+                            track,
+                            localStream
+                        );
                     }
-                );
+                });
         }
 
         const offer =
@@ -1938,10 +1634,8 @@ async function createOfferFor(
         socket.emit(
             "webrtc-offer",
             {
-                target:
-                    targetId,
-                sdp:
-                    peer.localDescription
+                target: targetId,
+                sdp: peer.localDescription
             }
         );
 
@@ -1954,19 +1648,25 @@ async function createOfferFor(
     }
 }
 
-/* OFFER */
+/* RECEBER OFERTA */
 
 socket.on(
     "webrtc-offer",
-    async ({ sender, sdp }) => {
+    async data => {
 
         try {
 
+            if (!data) {
+                return;
+            }
+
             const peer =
-                createPeer(sender);
+                createPeer(data.sender);
 
             await peer.setRemoteDescription(
-                new RTCSessionDescription(sdp)
+                new RTCSessionDescription(
+                    data.sdp
+                )
             );
 
             const answer =
@@ -1979,10 +1679,8 @@ socket.on(
             socket.emit(
                 "webrtc-answer",
                 {
-                    target:
-                        sender,
-                    sdp:
-                        peer.localDescription
+                    target: data.sender,
+                    sdp: peer.localDescription
                 }
             );
 
@@ -1996,23 +1694,30 @@ socket.on(
     }
 );
 
-/* ANSWER */
+/* RECEBER RESPOSTA */
 
 socket.on(
     "webrtc-answer",
-    async ({ sender, sdp }) => {
+    async data => {
 
         try {
 
-            const peer =
-                peers.get(sender);
-
-            if (peer) {
-
-                await peer.setRemoteDescription(
-                    new RTCSessionDescription(sdp)
-                );
+            if (!data) {
+                return;
             }
+
+            const peer =
+                peers.get(data.sender);
+
+            if (!peer) {
+                return;
+            }
+
+            await peer.setRemoteDescription(
+                new RTCSessionDescription(
+                    data.sdp
+                )
+            );
 
         } catch (error) {
 
@@ -2028,22 +1733,26 @@ socket.on(
 
 socket.on(
     "webrtc-ice-candidate",
-    async ({ sender, candidate }) => {
+    async data => {
 
         try {
 
-            const peer =
-                peers.get(sender);
-
-            if (
-                peer &&
-                candidate
-            ) {
-
-                await peer.addIceCandidate(
-                    new RTCIceCandidate(candidate)
-                );
+            if (!data) {
+                return;
             }
+
+            const peer =
+                peers.get(data.sender);
+
+            if (!peer || !data.candidate) {
+                return;
+            }
+
+            await peer.addIceCandidate(
+                new RTCIceCandidate(
+                    data.candidate
+                )
+            );
 
         } catch (error) {
 
@@ -2055,7 +1764,26 @@ socket.on(
     }
 );
 
+/* ERRO DE PERMISSÃO */
+
+socket.on(
+    "sharing-permission-denied",
+    data => {
+
+        sharingStatus.textContent =
+            data && data.error
+                ? data.error
+                : "Você não possui permissão para transmitir.";
+
+        sharingStatus.className =
+            "status error";
+
+        updateTransmissionUI();
+    }
+);
+
 </script>
 
 </body>
 </html>
+```
