@@ -252,6 +252,7 @@ button {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 
 .placeholder {
@@ -300,6 +301,7 @@ footer a {
 }
 
 @media(max-width:650px) {
+
     header {
         padding: 0 20px;
     }
@@ -327,6 +329,7 @@ footer a {
 <body>
 
 <header>
+
     <div class="logo">
         <span>Privcfg</span> Screen
     </div>
@@ -334,33 +337,50 @@ footer a {
     <div class="status" id="connectionStatus">
         Conectando...
     </div>
+
 </header>
 
 
 <main>
 
 <div class="title">
+
     <h1>Privcfg Screen</h1>
-    <p>Compartilhe sua tela com sua sala.</p>
+
+    <p>
+        Compartilhe sua tela com sua sala.
+    </p>
+
 </div>
 
 
 <div class="tabs">
 
-    <button class="tab active" id="roomsTab">
+    <button
+        class="tab active"
+        id="roomsTab"
+    >
         🏠 Salas
     </button>
 
-    <button class="tab" id="screenTab">
+    <button
+        class="tab"
+        id="screenTab"
+    >
         🖥️ Transmissão
     </button>
 
 </div>
 
 
-<!-- SALAS -->
+<!-- =========================
+     SALAS
+========================= -->
 
-<section class="section active" id="roomsSection">
+<section
+    class="section active"
+    id="roomsSection"
+>
 
 <div class="card">
 
@@ -373,17 +393,25 @@ footer a {
     <div class="grid">
 
         <div>
-            <label>Nome da sala</label>
+
+            <label>
+                Nome da sala
+            </label>
 
             <input
                 id="roomName"
                 placeholder="Minha sala"
                 maxlength="40"
             >
+
         </div>
 
+
         <div>
-            <label>Tipo</label>
+
+            <label>
+                Tipo
+            </label>
 
             <select id="roomType">
 
@@ -396,6 +424,7 @@ footer a {
                 </option>
 
             </select>
+
         </div>
 
     </div>
@@ -406,7 +435,9 @@ footer a {
         style="display:none;margin-top:15px;"
     >
 
-        <label>Senha</label>
+        <label>
+            Senha
+        </label>
 
         <input
             id="createPassword"
@@ -435,7 +466,9 @@ footer a {
         Use o código enviado pelo criador da sala.
     </p>
 
-    <label>Código</label>
+    <label>
+        Código
+    </label>
 
     <input
         id="joinCode"
@@ -450,7 +483,9 @@ footer a {
         style="display:none;margin-top:15px;"
     >
 
-        <label>Senha</label>
+        <label>
+            Senha
+        </label>
 
         <input
             id="joinPassword"
@@ -467,6 +502,7 @@ footer a {
     >
         Entrar na sala
     </button>
+
 
     <div
         class="message"
@@ -490,13 +526,17 @@ footer a {
             </strong>
 
             <div class="room-code">
+
                 Código:
+
                 <strong id="roomCodeDisplay">
                     ------
                 </strong>
+
             </div>
 
         </div>
+
 
         <div>
 
@@ -534,7 +574,9 @@ footer a {
 </section>
 
 
-<!-- TRANSMISSÃO -->
+<!-- =========================
+     TRANSMISSÃO
+========================= -->
 
 <section
     class="section"
@@ -562,13 +604,17 @@ footer a {
                 class="description"
                 style="margin:4px 0 0;"
             >
+
                 Código:
+
                 <span id="streamRoomCode">
                     ------
                 </span>
+
             </p>
 
         </div>
+
 
         <button
             class="secondary"
@@ -629,6 +675,7 @@ footer a {
             🖥️ Transmitir tela
         </button>
 
+
         <button
             class="danger"
             id="stopShare"
@@ -643,8 +690,10 @@ footer a {
     <div
         class="status"
         id="streamStatus"
+        style="margin-top:15px;text-align:center;"
     >
         Aguardando...
+
     </div>
 
 </div>
@@ -658,6 +707,7 @@ footer a {
 
     Privcfg Screen
     • Créditos:
+
     <a
         href="https://discord.gg/privcfg"
         target="_blank"
@@ -673,21 +723,43 @@ footer a {
 
 <script>
 
+"use strict";
+
+
+/* =========================
+   SOCKET
+========================= */
+
 const socket = io();
+
 
 let currentRoom = null;
 let localStream = null;
+let isSharing = false;
 
 const peers = new Map();
 
+
+/* =========================
+   WEBRTC
+========================= */
+
 const rtcConfig = {
+
     iceServers: [
+
         {
             urls: "stun:stun.l.google.com:19302"
         }
+
     ]
+
 };
 
+
+/* =========================
+   ELEMENTOS
+========================= */
 
 const roomsTab =
     document.getElementById("roomsTab");
@@ -746,8 +818,16 @@ const streamStatus =
 const connectionStatus =
     document.getElementById("connectionStatus");
 
+const startShare =
+    document.getElementById("startShare");
 
-/* CONEXÃO */
+const stopShare =
+    document.getElementById("stopShare");
+
+
+/* =========================
+   CONEXÃO
+========================= */
 
 socket.on("connect", () => {
 
@@ -771,7 +851,9 @@ socket.on("disconnect", () => {
 });
 
 
-/* TIPO DE SALA */
+/* =========================
+   TIPO DE SALA
+========================= */
 
 roomType.onchange = () => {
 
@@ -785,7 +867,9 @@ roomType.onchange = () => {
 };
 
 
-/* CRIAR SALA */
+/* =========================
+   CRIAR SALA
+========================= */
 
 createRoom.onclick = () => {
 
@@ -811,29 +895,36 @@ createRoom.onclick = () => {
         );
 
         return;
+
     }
 
 
     socket.emit(
         "create-room",
-        {
-            name,
-            private: isPrivate,
-            password
-        },
-        (result) => {
 
-            if (!result.ok) {
+        {
+            name: name,
+            private: isPrivate,
+            password: password
+        },
+
+        result => {
+
+            if (!result || !result.ok) {
 
                 showMessage(
-                    result.error,
+                    result?.error ||
+                    "Não foi possível criar a sala.",
                     "error"
                 );
 
                 return;
+
             }
 
+
             enterRoom(result.room);
+
 
             showMessage(
                 "Sala criada com sucesso!",
@@ -846,7 +937,9 @@ createRoom.onclick = () => {
 };
 
 
-/* ENTRAR */
+/* =========================
+   ENTRAR NA SALA
+========================= */
 
 joinRoom.onclick = () => {
 
@@ -871,28 +964,35 @@ joinRoom.onclick = () => {
         );
 
         return;
+
     }
 
 
     socket.emit(
         "join-room",
-        {
-            code,
-            password
-        },
-        (result) => {
 
-            if (!result.ok) {
+        {
+            code: code,
+            password: password
+        },
+
+        result => {
+
+            if (!result || !result.ok) {
 
                 showMessage(
-                    result.error,
+                    result?.error ||
+                    "Não foi possível entrar na sala.",
                     "error"
                 );
 
                 return;
+
             }
 
+
             enterRoom(result.room);
+
 
             showMessage(
                 "Você entrou na sala!",
@@ -905,13 +1005,16 @@ joinRoom.onclick = () => {
 };
 
 
-/* ENTRAR NA INTERFACE */
+/* =========================
+   ENTRAR NA INTERFACE
+========================= */
 
 function enterRoom(data) {
 
     currentRoom = data;
 
     room.classList.add("show");
+
 
     roomNameDisplay.textContent =
         data.name;
@@ -925,28 +1028,71 @@ function enterRoom(data) {
     streamRoomCode.textContent =
         data.code;
 
+
     updateMembers(data);
 
 }
 
 
-/* MEMBROS */
+/* =========================
+   ATUALIZAR MEMBROS
+========================= */
 
 function updateMembers(data) {
 
+    if (!data) return;
+
+
+    /*
+     * IMPORTANTE:
+     * mantém currentRoom atualizado.
+     */
+
+    if (currentRoom) {
+
+        currentRoom.members =
+            data.members;
+
+        currentRoom.owner =
+            data.owner;
+
+        currentRoom.name =
+            data.name;
+
+        currentRoom.code =
+            data.code;
+
+    }
+
+
     membersList.innerHTML = "";
+
 
     data.members.forEach(member => {
 
         const div =
             document.createElement("div");
 
-        div.className = "member";
+        div.className =
+            "member";
 
-        div.textContent =
-            member.id === socket.id
-                ? "Você"
-                : "Membro conectado";
+
+        if (member.id === socket.id) {
+
+            div.textContent =
+                member.owner
+                    ? "Você • Dono"
+                    : "Você";
+
+        } else {
+
+            div.textContent =
+                member.owner
+                    ? "Dono da sala"
+                    : "Membro conectado";
+
+        }
+
 
         membersList.appendChild(div);
 
@@ -955,20 +1101,34 @@ function updateMembers(data) {
 }
 
 
+/* =========================
+   ROOM UPDATED
+========================= */
+
 socket.on(
     "room-updated",
-    updateMembers
+    data => {
+
+        currentRoom = data;
+
+        updateMembers(data);
+
+    }
 );
 
 
-/* ABAS */
+/* =========================
+   ABAS
+========================= */
 
 roomsTab.onclick = () => {
 
     roomsTab.classList.add("active");
+
     screenTab.classList.remove("active");
 
     roomsSection.classList.add("active");
+
     screenSection.classList.remove("active");
 
 };
@@ -984,7 +1144,9 @@ screenTab.onclick = () => {
         );
 
         return;
+
     }
+
 
     openScreen();
 
@@ -994,15 +1156,19 @@ screenTab.onclick = () => {
 function openScreen() {
 
     roomsTab.classList.remove("active");
+
     screenTab.classList.add("active");
 
     roomsSection.classList.remove("active");
+
     screenSection.classList.add("active");
 
 }
 
 
-/* BOTÃO TRANSMITIR */
+/* =========================
+   BOTÕES
+========================= */
 
 document.getElementById(
     "goScreen"
@@ -1018,15 +1184,17 @@ document.getElementById(
 };
 
 
-/* SAIR */
+/* =========================
+   SAIR
+========================= */
 
 document.getElementById(
     "leaveRoom"
 ).onclick = () => {
 
-    socket.emit("leave-room");
+    stopSharing(false);
 
-    stopSharing();
+    socket.emit("leave-room");
 
     currentRoom = null;
 
@@ -1037,13 +1205,39 @@ document.getElementById(
 };
 
 
-/* INICIAR COMPARTILHAMENTO */
+/* =========================
+   INICIAR COMPARTILHAMENTO
+========================= */
 
-document.getElementById(
-    "startShare"
-).onclick = async () => {
+startShare.onclick = async () => {
 
-    if (!currentRoom) return;
+    if (!currentRoom) {
+
+        showMessage(
+            "Entre em uma sala primeiro.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        currentRoom.owner !== socket.id
+    ) {
+
+        showMessage(
+            "Somente o dono da sala pode transmitir.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (isSharing) return;
 
 
     try {
@@ -1051,30 +1245,35 @@ document.getElementById(
         localStream =
             await navigator.mediaDevices
                 .getDisplayMedia({
+
                     video: true,
+
                     audio: false
+
                 });
+
+
+        isSharing = true;
 
 
         localVideo.srcObject =
             localStream;
 
-
         localVideo.style.display =
             "block";
+
+        remoteVideo.style.display =
+            "none";
 
         placeholder.style.display =
             "none";
 
 
-        document.getElementById(
-            "startShare"
-        ).style.display = "none";
+        startShare.style.display =
+            "none";
 
-
-        document.getElementById(
-            "stopShare"
-        ).style.display = "inline-block";
+        stopShare.style.display =
+            "inline-block";
 
 
         streamStatus.textContent =
@@ -1084,84 +1283,136 @@ document.getElementById(
             "#46d889";
 
 
-        socket.emit("start-sharing");
+        /*
+         * Avisa todos os membros.
+         */
 
-
-        localStream
-            .getVideoTracks()[0]
-            .onended = stopSharing;
+        socket.emit(
+            "start-sharing"
+        );
 
 
         /*
-         * Para cada membro da sala,
-         * cria uma conexão WebRTC.
+         * Se o usuário parar pelo navegador,
+         * encerra a transmissão.
          */
 
-        currentRoom.members.forEach(
-            async member => {
+        const track =
+            localStream.getVideoTracks()[0];
 
-                if (member.id === socket.id) {
-                    return;
-                }
 
-                await createOfferFor(
-                    member.id
-                );
+        if (track) {
+
+            track.onended = () => {
+
+                stopSharing();
+
+            };
+
+        }
+
+
+        /*
+         * Cria conexão com todos
+         * os membros atuais.
+         */
+
+        const members =
+            currentRoom.members || [];
+
+
+        for (
+            const member of members
+        ) {
+
+            if (
+                member.id === socket.id
+            ) {
+
+                continue;
 
             }
-        );
+
+
+            await createOfferFor(
+                member.id
+            );
+
+        }
 
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Erro ao iniciar transmissão:",
+            error
+        );
+
 
         streamStatus.textContent =
-            "Não foi possível iniciar a transmissão.";
+            "Transmissão cancelada.";
+
+        streamStatus.style.color =
+            "#ff6978";
 
     }
 
 };
 
 
-/* PARAR */
+/* =========================
+   PARAR TRANSMISSÃO
+========================= */
 
-document.getElementById(
-    "stopShare"
-).onclick = stopSharing;
+stopShare.onclick = () => {
+
+    stopSharing();
+
+};
 
 
-function stopSharing() {
+function stopSharing(notify = true) {
+
+    isSharing = false;
+
 
     if (localStream) {
 
         localStream
             .getTracks()
-            .forEach(track => track.stop());
+            .forEach(track => {
+
+                track.stop();
+
+            });
 
         localStream = null;
+
     }
 
 
-    localVideo.srcObject = null;
+    localVideo.srcObject =
+        null;
 
     localVideo.style.display =
         "none";
 
-    placeholder.style.display =
-        "block";
 
-
-    document.getElementById(
-        "startShare"
-    ).style.display =
+    startShare.style.display =
         "inline-block";
 
-
-    document.getElementById(
-        "stopShare"
-    ).style.display =
+    stopShare.style.display =
         "none";
+
+
+    if (
+        !remoteVideo.srcObject
+    ) {
+
+        placeholder.style.display =
+            "block";
+
+    }
 
 
     streamStatus.textContent =
@@ -1171,26 +1422,54 @@ function stopSharing() {
         "#777b8d";
 
 
-    peers.forEach(
-        peer => peer.close()
-    );
-
-    peers.clear();
+    closeAllPeers();
 
 
-    socket.emit("stop-sharing");
+    if (notify) {
+
+        socket.emit(
+            "stop-sharing"
+        );
+
+    }
 
 }
 
 
-/* ==========================
-   WEBRTC
-========================== */
+/* =========================
+   FECHAR PEERS
+========================= */
+
+function closeAllPeers() {
+
+    peers.forEach(
+        peer => {
+
+            try {
+
+                peer.close();
+
+            } catch (error) {}
+
+        }
+    );
+
+
+    peers.clear();
+
+}
+
+
+/* =========================
+   CRIAR PEER
+========================= */
 
 async function createPeer(targetId) {
 
     if (peers.has(targetId)) {
+
         return peers.get(targetId);
+
     }
 
 
@@ -1205,6 +1484,11 @@ async function createPeer(targetId) {
         pc
     );
 
+
+    /*
+     * Se eu sou o transmissor,
+     * adiciono minha tela.
+     */
 
     if (localStream) {
 
@@ -1222,33 +1506,96 @@ async function createPeer(targetId) {
     }
 
 
+    /*
+     * ICE
+     */
+
     pc.onicecandidate =
         event => {
 
-            if (!event.candidate) return;
+            if (
+                !event.candidate
+            ) {
+
+                return;
+
+            }
+
 
             socket.emit(
                 "webrtc-ice-candidate",
+
                 {
                     target: targetId,
-                    candidate: event.candidate
+
+                    candidate:
+                        event.candidate
+
                 }
             );
 
         };
 
 
+    /*
+     * RECEBER VÍDEO
+     */
+
     pc.ontrack =
         event => {
 
-            remoteVideo.srcObject =
-                event.streams[0];
+            console.log(
+                "Stream recebido de:",
+                targetId
+            );
+
+
+            if (
+                event.streams &&
+                event.streams[0]
+            ) {
+
+                remoteVideo.srcObject =
+                    event.streams[0];
+
+            } else {
+
+                /*
+                 * Fallback para navegadores
+                 * que não fornecem streams.
+                 */
+
+                let stream =
+                    remoteVideo.srcObject;
+
+
+                if (!stream) {
+
+                    stream =
+                        new MediaStream();
+
+                    remoteVideo.srcObject =
+                        stream;
+
+                }
+
+
+                stream.addTrack(
+                    event.track
+                );
+
+            }
+
 
             remoteVideo.style.display =
                 "block";
 
+            localVideo.style.display =
+                "none";
+
             placeholder.style.display =
                 "none";
+
 
             streamStatus.textContent =
                 "● Recebendo transmissão";
@@ -1256,20 +1603,60 @@ async function createPeer(targetId) {
             streamStatus.style.color =
                 "#46d889";
 
+
+            /*
+             * Alguns navegadores podem
+             * bloquear autoplay.
+             */
+
+            remoteVideo.play()
+                .catch(() => {});
+
         };
 
+
+    /*
+     * Estado da conexão
+     */
 
     pc.onconnectionstatechange =
         () => {
 
+            console.log(
+                "WebRTC:",
+                targetId,
+                pc.connectionState
+            );
+
+
             if (
                 pc.connectionState ===
-                "failed" ||
+                "failed"
+            ) {
+
+                peers.delete(
+                    targetId
+                );
+
+                pc.close();
+
+                streamStatus.textContent =
+                    "Falha na conexão com a transmissão.";
+
+                streamStatus.style.color =
+                    "#ff6978";
+
+            }
+
+
+            if (
                 pc.connectionState ===
                 "closed"
             ) {
 
-                peers.delete(targetId);
+                peers.delete(
+                    targetId
+                );
 
             }
 
@@ -1277,117 +1664,259 @@ async function createPeer(targetId) {
 
 
     return pc;
+
 }
 
 
-/* OFERTA */
+/* =========================
+   CRIAR OFERTA
+========================= */
 
-async function createOfferFor(targetId) {
+async function createOfferFor(
+    targetId
+) {
 
-    const pc =
-        await createPeer(targetId);
+    try {
 
-
-    const offer =
-        await pc.createOffer();
-
-
-    await pc.setLocalDescription(
-        offer
-    );
+        const pc =
+            await createPeer(
+                targetId
+            );
 
 
-    socket.emit(
-        "webrtc-offer",
-        {
-            target: targetId,
-            offer
+        /*
+         * Garante que a tela atual
+         * esteja adicionada ao peer.
+         */
+
+        if (localStream) {
+
+            const senders =
+                pc.getSenders();
+
+
+            const videoTrack =
+                localStream
+                    .getVideoTracks()[0];
+
+
+            const alreadyAdded =
+                senders.some(
+                    sender =>
+                        sender.track ===
+                        videoTrack
+                );
+
+
+            if (
+                videoTrack &&
+                !alreadyAdded
+            ) {
+
+                pc.addTrack(
+                    videoTrack,
+                    localStream
+                );
+
+            }
+
         }
-    );
+
+
+        const offer =
+            await pc.createOffer();
+
+
+        await pc.setLocalDescription(
+            offer
+        );
+
+
+        socket.emit(
+            "webrtc-offer",
+
+            {
+                target: targetId,
+
+                offer:
+                    pc.localDescription
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao criar oferta:",
+            error
+        );
+
+    }
 
 }
 
 
-/* RECEBER OFERTA */
+/* =========================
+   RECEBER OFERTA
+========================= */
 
 socket.on(
     "webrtc-offer",
+
     async ({
         from,
         offer
     }) => {
 
-        const pc =
-            await createPeer(from);
+        try {
+
+            /*
+             * O membro que recebe
+             * cria o peer sem localStream.
+             */
+
+            const pc =
+                await createPeer(
+                    from
+                );
 
 
-        await pc.setRemoteDescription(
-            offer
-        );
+            await pc.setRemoteDescription(
+                new RTCSessionDescription(
+                    offer
+                )
+            );
 
 
-        const answer =
-            await pc.createAnswer();
+            const answer =
+                await pc.createAnswer();
 
 
-        await pc.setLocalDescription(
-            answer
-        );
-
-
-        socket.emit(
-            "webrtc-answer",
-            {
-                target: from,
+            await pc.setLocalDescription(
                 answer
-            }
-        );
+            );
+
+
+            socket.emit(
+                "webrtc-answer",
+
+                {
+                    target: from,
+
+                    answer:
+                        pc.localDescription
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao receber oferta:",
+                error
+            );
+
+        }
 
     }
 );
 
 
-/* RECEBER RESPOSTA */
+/* =========================
+   RECEBER ANSWER
+========================= */
 
 socket.on(
     "webrtc-answer",
+
     async ({
         from,
         answer
     }) => {
 
-        const pc =
-            peers.get(from);
+        try {
 
-        if (!pc) return;
+            const pc =
+                peers.get(from);
 
-        await pc.setRemoteDescription(
-            answer
-        );
+
+            if (!pc) {
+
+                console.warn(
+                    "Peer não encontrado:",
+                    from
+                );
+
+                return;
+
+            }
+
+
+            await pc.setRemoteDescription(
+                new RTCSessionDescription(
+                    answer
+                )
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao receber answer:",
+                error
+            );
+
+        }
 
     }
 );
 
 
-/* ICE */
+/* =========================
+   ICE
+========================= */
 
 socket.on(
     "webrtc-ice-candidate",
+
     async ({
         from,
         candidate
     }) => {
 
-        const pc =
-            peers.get(from);
-
-        if (!pc) return;
-
         try {
 
+            const pc =
+                peers.get(from);
+
+
+            if (!pc) {
+
+                console.warn(
+                    "Peer não encontrado para ICE:",
+                    from
+                );
+
+                return;
+
+            }
+
+
+            if (!candidate) {
+
+                return;
+
+            }
+
+
             await pc.addIceCandidate(
-                candidate
+                new RTCIceCandidate(
+                    candidate
+                )
             );
+
 
         } catch (error) {
 
@@ -1402,25 +1931,40 @@ socket.on(
 );
 
 
-/* NOVO MEMBRO */
+/* =========================
+   NOVO MEMBRO
+========================= */
 
 socket.on(
     "member-joined",
-    data => {
+
+    async data => {
 
         /*
-         * Se você é o transmissor,
-         * oferece a tela ao novo membro.
+         * Se estou transmitindo,
+         * envio minha tela ao novo membro.
          */
 
         if (
+            isSharing &&
             localStream &&
             currentRoom
         ) {
 
-            createOfferFor(
-                data.id
-            );
+            try {
+
+                await createOfferFor(
+                    data.id
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Erro enviando tela ao novo membro:",
+                    error
+                );
+
+            }
 
         }
 
@@ -1428,11 +1972,17 @@ socket.on(
 );
 
 
-/* TRANSMISSÃO INICIADA */
+/* =========================
+   TRANSMISSÃO INICIADA
+========================= */
 
 socket.on(
     "screen-sharing-started",
+
     data => {
+
+        openScreen();
+
 
         streamStatus.textContent =
             "Conectando à transmissão...";
@@ -1444,10 +1994,13 @@ socket.on(
 );
 
 
-/* TRANSMISSÃO PARADA */
+/* =========================
+   TRANSMISSÃO PARADA
+========================= */
 
 socket.on(
     "screen-sharing-stopped",
+
     () => {
 
         remoteVideo.srcObject =
@@ -1456,8 +2009,10 @@ socket.on(
         remoteVideo.style.display =
             "none";
 
+
         placeholder.style.display =
             "block";
+
 
         streamStatus.textContent =
             "A transmissão terminou.";
@@ -1465,21 +2020,60 @@ socket.on(
         streamStatus.style.color =
             "#777b8d";
 
-        peers.forEach(
-            peer => peer.close()
-        );
 
-        peers.clear();
+        closeAllPeers();
 
     }
 );
 
 
-/* NOVO DONO */
+/* =========================
+   MEMBRO SAIU
+========================= */
+
+socket.on(
+    "member-left",
+
+    data => {
+
+        const peer =
+            peers.get(data.id);
+
+
+        if (peer) {
+
+            try {
+
+                peer.close();
+
+            } catch (error) {}
+
+            peers.delete(
+                data.id
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================
+   NOVO DONO
+========================= */
 
 socket.on(
     "owner-changed",
+
     data => {
+
+        if (currentRoom) {
+
+            currentRoom.owner =
+                data.owner;
+
+        }
+
 
         showMessage(
             "O dono da sala mudou.",
@@ -1490,7 +2084,9 @@ socket.on(
 );
 
 
-/* MENSAGENS */
+/* =========================
+   MENSAGENS
+========================= */
 
 function showMessage(
     text,
