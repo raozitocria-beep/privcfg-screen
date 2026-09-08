@@ -9,18 +9,6 @@ const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-/*
- * Sala:
- * {
- *   code,
- *   name,
- *   private,
- *   password,
- *   owner,
- *   members: Set
- * }
- */
-
 const rooms = new Map();
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -59,6 +47,7 @@ function roomInfo(room) {
         owner: room.owner,
         members: [...room.members].map(id => ({
             id,
+            name: room.users[id]?.name || "Usuário",
             owner: id === room.owner
         }))
     };
@@ -67,6 +56,34 @@ function roomInfo(room) {
 io.on("connection", (socket) => {
 
     console.log("Usuário conectado:", socket.id);
+
+    /*
+     * DEFINIR NOME
+     */
+
+    socket.on("set-name", (name, callback) => {
+
+        name = String(name || "")
+            .trim()
+            .slice(0, 30);
+
+        if (!name) {
+            return callback?.({
+                ok: false,
+                error: "Digite um nome."
+            });
+        }
+
+        socket.data.userName = name;
+
+        callback?.({
+            ok: true,
+            name
+        });
+
+        console.log(`${name} entrou no servidor.`);
+
+    });
 
 
     /*
@@ -95,6 +112,13 @@ io.on("connection", (socket) => {
             });
         }
 
+        if (!socket.data.userName) {
+            return callback?.({
+                ok: false,
+                error: "Defina seu nome primeiro."
+            });
+        }
+
         const code = generateRoomCode();
 
         const room = {
@@ -103,7 +127,12 @@ io.on("connection", (socket) => {
             private: privateRoom,
             password,
             owner: socket.id,
-            members: new Set([socket.id])
+            members: new Set([socket.id]),
+            users: {
+                [socket.id]: {
+                    name: socket.data.userName
+                }
+            }
         };
 
         rooms.set(code, room);
@@ -116,7 +145,10 @@ io.on("connection", (socket) => {
             room: roomInfo(room)
         });
 
-        console.log(`Sala criada: ${code}`);
+        console.log(
+            `Sala criada: ${code} por ${socket.data.userName}`
+        );
+
     });
 
 
@@ -143,6 +175,13 @@ io.on("connection", (socket) => {
             });
         }
 
+        if (!socket.data.userName) {
+            return callback?.({
+                ok: false,
+                error: "Defina seu nome primeiro."
+            });
+        }
+
         if (room.private && password !== room.password) {
             return callback?.({
                 ok: false,
@@ -151,6 +190,10 @@ io.on("connection", (socket) => {
         }
 
         room.members.add(socket.id);
+
+        room.users[socket.id] = {
+            name: socket.data.userName
+        };
 
         socket.join(code);
         socket.data.roomCode = code;
@@ -161,18 +204,20 @@ io.on("connection", (socket) => {
         });
 
         socket.to(code).emit("member-joined", {
-            id: socket.id
+            id: socket.id,
+            name: socket.data.userName
         });
 
         io.to(code).emit(
             "room-updated",
             roomInfo(room)
         );
+
     });
 
 
     /*
-     * SAIR DA SALA
+     * SAIR
      */
 
     socket.on("leave-room", () => {
@@ -181,7 +226,7 @@ io.on("connection", (socket) => {
 
 
     /*
-     * SOLICITAR TRANSMISSÃO
+     * INICIAR TRANSMISSÃO
      */
 
     socket.on("start-sharing", () => {
@@ -198,9 +243,13 @@ io.on("connection", (socket) => {
             return;
         }
 
-        socket.to(code).emit("screen-sharing-started", {
-            hostId: socket.id
-        });
+        socket.to(code).emit(
+            "screen-sharing-started",
+            {
+                hostId: socket.id
+            }
+        );
+
     });
 
 
@@ -214,39 +263,63 @@ io.on("connection", (socket) => {
 
         if (!code) return;
 
-        socket.to(code).emit("screen-sharing-stopped");
+        socket.to(code).emit(
+            "screen-sharing-stopped"
+        );
+
     });
 
 
     /*
-     * WEBRTC SIGNALING
+     * WEBRTC
      */
 
-    socket.on("webrtc-offer", ({ target, offer }) => {
+    socket.on(
+        "webrtc-offer",
+        ({ target, offer }) => {
 
-        io.to(target).emit("webrtc-offer", {
-            from: socket.id,
-            offer
-        });
-    });
+            io.to(target).emit(
+                "webrtc-offer",
+                {
+                    from: socket.id,
+                    offer
+                }
+            );
 
-
-    socket.on("webrtc-answer", ({ target, answer }) => {
-
-        io.to(target).emit("webrtc-answer", {
-            from: socket.id,
-            answer
-        });
-    });
+        }
+    );
 
 
-    socket.on("webrtc-ice-candidate", ({ target, candidate }) => {
+    socket.on(
+        "webrtc-answer",
+        ({ target, answer }) => {
 
-        io.to(target).emit("webrtc-ice-candidate", {
-            from: socket.id,
-            candidate
-        });
-    });
+            io.to(target).emit(
+                "webrtc-answer",
+                {
+                    from: socket.id,
+                    answer
+                }
+            );
+
+        }
+    );
+
+
+    socket.on(
+        "webrtc-ice-candidate",
+        ({ target, candidate }) => {
+
+            io.to(target).emit(
+                "webrtc-ice-candidate",
+                {
+                    from: socket.id,
+                    candidate
+                }
+            );
+
+        }
+    );
 
 
     /*
@@ -257,10 +330,12 @@ io.on("connection", (socket) => {
 
         console.log(
             "Usuário desconectado:",
+            socket.data.userName ||
             socket.id
         );
 
         leaveCurrentRoom(socket);
+
     });
 
 });
@@ -278,14 +353,16 @@ function leaveCurrentRoom(socket) {
 
     room.members.delete(socket.id);
 
+    delete room.users[socket.id];
+
     socket.leave(code);
 
     socket.data.roomCode = null;
 
 
     /*
-     * Se o dono saiu, transfere a propriedade
-     * para outro membro.
+     * Se o dono sair,
+     * passa para outro membro.
      */
 
     if (room.owner === socket.id) {
@@ -305,12 +382,13 @@ function leaveCurrentRoom(socket) {
             );
 
         }
+
     }
 
 
     /*
-     * Se não houver ninguém,
-     * remove a sala.
+     * Se a sala ficou vazia,
+     * remove.
      */
 
     if (room.members.size === 0) {
@@ -322,6 +400,7 @@ function leaveCurrentRoom(socket) {
         );
 
         return;
+
     }
 
 
@@ -336,6 +415,7 @@ function leaveCurrentRoom(socket) {
         "room-updated",
         roomInfo(room)
     );
+
 }
 
 
@@ -346,6 +426,7 @@ server.listen(PORT, () => {
     console.log("       PRIVCFG SCREEN");
     console.log("================================");
     console.log("");
-    console.log(`Servidor: http://localhost:${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
     console.log("");
+
 });
