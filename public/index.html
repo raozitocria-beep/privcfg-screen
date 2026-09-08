@@ -1,332 +1,532 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Privcfg Screen</title>
+    <meta charset="UTF-8">
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-body {
-    min-height: 100vh;
-    background: #08090d;
-    color: #fff;
-    font-family: Arial, sans-serif;
-}
+    <title>Privcfg Screen</title>
 
-header {
-    height: 70px;
-    background: #101116;
-    border-bottom: 1px solid #242630;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 35px;
-}
+    <script src="/socket.io/socket.io.js"></script>
 
-.logo {
-    font-size: 20px;
-    font-weight: 800;
-}
+    <style>
 
-.logo span {
-    color: #695cff;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-.status {
-    color: #777b8d;
-    font-size: 13px;
-}
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #08090d;
+            color: #fff;
+            min-height: 100vh;
+        }
 
-main {
-    width: min(950px, 92%);
-    margin: auto;
-    padding: 40px 0;
-}
+        button,
+        input {
+            font-family: inherit;
+        }
 
-.title {
-    text-align: center;
-    margin-bottom: 30px;
-}
+        button {
+            cursor: pointer;
+        }
 
-.title h1 {
-    font-size: 38px;
-    margin-bottom: 10px;
-}
+        /* =========================
+           TELA DO NOME
+        ========================= */
 
-.title p {
-    color: #858997;
-}
+        .name-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
 
-.tabs {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 25px;
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-.tab {
-    border: 1px solid #292c36;
-    background: #15161d;
-    color: #888c9b;
-    padding: 12px 22px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-}
+            background:
+                radial-gradient(
+                    circle at center,
+                    #171526 0%,
+                    #08090d 55%
+                );
+        }
 
-.tab.active {
-    background: #6254f5;
-    border-color: #6254f5;
-    color: white;
-}
+        .name-card {
+            width: min(430px, 90%);
+            padding: 36px;
 
-.section {
-    display: none;
-}
+            background: #101116;
 
-.section.active {
-    display: block;
-}
+            border: 1px solid #282a35;
+            border-radius: 20px;
 
-.card {
-    background: #101116;
-    border: 1px solid #252732;
-    border-radius: 18px;
-    padding: 25px;
-    margin-bottom: 18px;
-}
+            text-align: center;
 
-.card h2 {
-    margin-bottom: 8px;
-}
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, .55);
+        }
 
-.description {
-    color: #777b8d;
-    font-size: 14px;
-    margin-bottom: 20px;
-}
+        .name-logo {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
 
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
+        .name-logo span {
+            color: #7568ff;
+        }
 
-label {
-    display: block;
-    color: #aab0bf;
-    font-size: 13px;
-    margin-bottom: 7px;
-}
+        .name-card h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
 
-input,
-select {
-    width: 100%;
-    padding: 13px;
-    border-radius: 9px;
-    border: 1px solid #2a2d38;
-    background: #08090d;
-    color: white;
-    outline: none;
-}
+        .name-card p {
+            color: #858897;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
 
-input:focus,
-select:focus {
-    border-color: #6254f5;
-}
+        .name-card input {
+            width: 100%;
+            height: 48px;
 
-button {
-    border: 0;
-    border-radius: 10px;
-    padding: 13px 20px;
-    font-weight: bold;
-    cursor: pointer;
-}
+            padding: 0 15px;
 
-.primary {
-    background: #6254f5;
-    color: white;
-}
+            color: #fff;
+            background: #181a21;
 
-.primary:hover {
-    background: #7568ff;
-}
+            border: 1px solid #2c2e3a;
+            border-radius: 10px;
 
-.secondary {
-    background: #242630;
-    color: white;
-}
+            outline: none;
 
-.danger {
-    background: #bd3949;
-    color: white;
-}
+            font-size: 15px;
 
-.full {
-    width: 100%;
-    margin-top: 18px;
-}
+            margin-bottom: 12px;
+        }
 
-.code {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
+        .name-card input:focus {
+            border-color: #7568ff;
+        }
 
-.code input {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    letter-spacing: 4px;
-}
+        .name-card button {
+            width: 100%;
+            height: 48px;
 
-.message {
-    display: none;
-    margin-top: 15px;
-    padding: 13px;
-    border-radius: 9px;
-    font-size: 13px;
-}
+            border: none;
+            border-radius: 10px;
 
-.message.show {
-    display: block;
-}
+            color: white;
+            background: #7568ff;
 
-.error {
-    background: rgba(210,65,82,.12);
-    color: #ff7887;
-}
+            font-weight: 700;
+            font-size: 15px;
 
-.success {
-    background: rgba(60,200,125,.12);
-    color: #62dda0;
-}
+            transition: .2s;
+        }
 
-.room {
-    display: none;
-    background: #11131a;
-    border: 1px solid #292c36;
-    padding: 18px;
-    border-radius: 12px;
-}
+        .name-card button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
 
-.room.show {
-    display: block;
-}
+        .name-error {
+            min-height: 20px;
+            margin-top: 12px;
 
-.room-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-}
+            color: #ff6878;
+            font-size: 13px;
+        }
 
-.room-code {
-    color: #777b8d;
-    font-size: 13px;
-    margin-top: 5px;
-}
 
-.members {
-    margin-top: 20px;
-}
+        /* =========================
+           HEADER
+        ========================= */
 
-.member {
-    padding: 12px 0;
-    border-bottom: 1px solid #242630;
-    color: #bbbfc9;
-}
+        header {
+            height: 70px;
 
-.screen {
-    height: 480px;
-    border-radius: 16px;
-    border: 1px solid #292c36;
-    background: #030305;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-}
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-.placeholder {
-    text-align: center;
-    color: #777b8d;
-}
+            padding: 0 28px;
 
-.placeholder .icon {
-    font-size: 55px;
-    margin-bottom: 15px;
-}
+            background: #0e0f14;
+            border-bottom: 1px solid #22242d;
+        }
 
-video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: black;
-}
+        .logo {
+            font-size: 21px;
+            font-weight: 800;
+        }
 
-#localVideo {
-    display: none;
-}
+        .logo span {
+            color: #7568ff;
+        }
 
-.remote-video {
-    display: none;
-}
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
+        .connection {
+            color: #62dc9b;
+            font-size: 13px;
+        }
 
-footer {
-    text-align: center;
-    padding: 30px;
-    color: #555966;
-    font-size: 12px;
-}
+        .user-name {
+            padding: 8px 12px;
 
-footer a {
-    color: #695cff;
-    text-decoration: none;
-    font-weight: bold;
-}
+            background: #181a21;
 
-@media(max-width:650px) {
+            border: 1px solid #292b35;
+            border-radius: 8px;
 
-    header {
-        padding: 0 20px;
-    }
+            font-size: 13px;
+            color: #cfd1dc;
+        }
 
-    .status {
-        display: none;
-    }
 
-    .grid {
-        grid-template-columns: 1fr;
-    }
+        /* =========================
+           LAYOUT
+        ========================= */
 
-    .screen {
-        height: 330px;
-    }
+        .container {
+            width: min(1200px, 94%);
+            margin: 30px auto;
+        }
 
-    .room-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-</style>
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 330px;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        /* =========================
+           CARDS
+        ========================= */
+
+        .card {
+            background: #101116;
+
+            border: 1px solid #242631;
+            border-radius: 16px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, .18);
+        }
+
+        .card + .card {
+            margin-top: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-description {
+            color: #858897;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================
+           INPUTS
+        ========================= */
+
+        .input {
+            width: 100%;
+            height: 45px;
+
+            padding: 0 13px;
+
+            background: #181a21;
+            color: white;
+
+            border: 1px solid #2b2d37;
+            border-radius: 9px;
+
+            outline: none;
+
+            margin-bottom: 10px;
+        }
+
+        .input:focus {
+            border-color: #7568ff;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            min-height: 44px;
+
+            padding: 0 18px;
+
+            border: none;
+            border-radius: 9px;
+
+            color: white;
+
+            background: #20222b;
+
+            font-weight: 700;
+
+            transition: .2s;
+        }
+
+        .btn:hover {
+            filter: brightness(1.15);
+        }
+
+        .btn-primary {
+            background: #7568ff;
+        }
+
+        .btn-danger {
+            background: #d84e61;
+        }
+
+        .btn-success {
+            background: #2b9b68;
+        }
+
+        .btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           ROOM INFO
+        ========================= */
+
+        .room-code {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 14px;
+
+            background: #181a21;
+
+            border: 1px solid #292b35;
+            border-radius: 10px;
+
+            margin-bottom: 15px;
+        }
+
+        .room-code strong {
+            color: #7568ff;
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+
+
+        /* =========================
+           MEMBERS
+        ========================= */
+
+        .members {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .member {
+            display: flex;
+            align-items: center;
+
+            min-height: 42px;
+
+            padding: 0 12px;
+
+            background: #181a21;
+
+            border: 1px solid #292b35;
+            border-radius: 9px;
+
+            color: #d8dae4;
+
+            font-size: 13px;
+        }
+
+        .member.me {
+            border-color: #7568ff;
+        }
+
+
+        /* =========================
+           SCREEN
+        ========================= */
+
+        .screen-container {
+            position: relative;
+
+            width: 100%;
+            min-height: 450px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            background: #08090d;
+
+            border: 1px solid #242631;
+            border-radius: 14px;
+        }
+
+        #remoteVideo {
+            width: 100%;
+            height: 100%;
+
+            max-height: 650px;
+
+            object-fit: contain;
+
+            background: #000;
+
+            display: none;
+        }
+
+        .screen-placeholder {
+            text-align: center;
+            color: #6e7180;
+        }
+
+        .screen-placeholder h2 {
+            color: #aeb1be;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .screen-placeholder p {
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+            padding: 12px 14px;
+
+            background: #181a21;
+
+            border-radius: 9px;
+
+            color: #9da0af;
+
+            font-size: 13px;
+
+            margin-top: 15px;
+        }
+
+        .status.success {
+            color: #65dfa0;
+        }
+
+        .status.error {
+            color: #ff6878;
+        }
+
+
+        /* =========================
+           HIDDEN
+        ========================= */
+
+        .hidden {
+            display: none !important;
+        }
+
+    </style>
 </head>
 
 <body>
+
+
+<!-- =====================================
+     TELA PARA ESCOLHER NOME
+===================================== -->
+
+<div
+    id="nameScreen"
+    class="name-screen"
+>
+
+    <div class="name-card">
+
+        <div class="name-logo">
+            <span>Privcfg</span> Screen
+        </div>
+
+        <h1>Bem-vindo</h1>
+
+        <p>
+            Digite seu nome para entrar no Privcfg Screen.
+        </p>
+
+        <input
+            id="userNameInput"
+            type="text"
+            maxlength="30"
+            placeholder="Digite seu nome"
+            autocomplete="off"
+        >
+
+        <button
+            id="enterSite"
+        >
+            Entrar
+        </button>
+
+        <div
+            id="nameError"
+            class="name-error"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     HEADER
+===================================== -->
 
 <header>
 
@@ -334,508 +534,386 @@ footer a {
         <span>Privcfg</span> Screen
     </div>
 
-    <div class="status" id="connectionStatus">
-        Conectando...
+    <div class="header-right">
+
+        <div
+            id="connectionStatus"
+            class="connection"
+        >
+            ● Conectando...
+        </div>
+
+        <div
+            id="headerUserName"
+            class="user-name"
+        >
+            Usuário
+        </div>
+
     </div>
 
 </header>
 
 
-<main>
+<!-- =====================================
+     CONTEÚDO
+===================================== -->
 
-<div class="title">
-
-    <h1>Privcfg Screen</h1>
-
-    <p>
-        Compartilhe sua tela com sua sala.
-    </p>
-
-</div>
-
-
-<div class="tabs">
-
-    <button
-        class="tab active"
-        id="roomsTab"
-    >
-        🏠 Salas
-    </button>
-
-    <button
-        class="tab"
-        id="screenTab"
-    >
-        🖥️ Transmissão
-    </button>
-
-</div>
-
-
-<!-- =========================
-     SALAS
-========================= -->
-
-<section
-    class="section active"
-    id="roomsSection"
->
-
-<div class="card">
-
-    <h2>Criar sala</h2>
-
-    <p class="description">
-        Crie uma sala e envie o código para seus amigos.
-    </p>
+<div class="container">
 
     <div class="grid">
 
-        <div>
 
-            <label>
-                Nome da sala
-            </label>
-
-            <input
-                id="roomName"
-                placeholder="Minha sala"
-                maxlength="40"
-            >
-
-        </div>
-
+        <!-- =================================
+             ESQUERDA
+        ================================== -->
 
         <div>
 
-            <label>
-                Tipo
-            </label>
 
-            <select id="roomType">
+            <!-- SALA -->
 
-                <option value="public">
-                    Pública
-                </option>
+            <div class="card">
 
-                <option value="private">
-                    🔒 Privada
-                </option>
+                <div class="card-title">
+                    Sala
+                </div>
 
-            </select>
-
-        </div>
-
-    </div>
+                <div class="card-description">
+                    Crie uma sala ou entre em uma sala existente.
+                </div>
 
 
-    <div
-        id="createPasswordBox"
-        style="display:none;margin-top:15px;"
-    >
-
-        <label>
-            Senha
-        </label>
-
-        <input
-            id="createPassword"
-            type="password"
-            placeholder="Senha da sala"
-        >
-
-    </div>
+                <input
+                    id="roomName"
+                    class="input"
+                    type="text"
+                    maxlength="40"
+                    placeholder="Nome da sala"
+                >
 
 
-    <button
-        class="primary full"
-        id="createRoom"
-    >
-        + Criar sala
-    </button>
-
-</div>
-
-
-<div class="card">
-
-    <h2>Entrar em uma sala</h2>
-
-    <p class="description">
-        Use o código enviado pelo criador da sala.
-    </p>
-
-    <label>
-        Código
-    </label>
-
-    <input
-        id="joinCode"
-        maxlength="6"
-        placeholder="ABC123"
-        style="text-transform:uppercase"
-    >
+                <input
+                    id="roomCodeInput"
+                    class="input"
+                    type="text"
+                    maxlength="6"
+                    placeholder="Código da sala"
+                    style="text-transform:uppercase"
+                >
 
 
-    <div
-        id="joinPasswordBox"
-        style="display:none;margin-top:15px;"
-    >
-
-        <label>
-            Senha
-        </label>
-
-        <input
-            id="joinPassword"
-            type="password"
-            placeholder="Senha"
-        >
-
-    </div>
+                <input
+                    id="roomPassword"
+                    class="input"
+                    type="password"
+                    placeholder="Senha da sala (opcional)"
+                >
 
 
-    <button
-        class="secondary full"
-        id="joinRoom"
-    >
-        Entrar na sala
-    </button>
+                <div class="buttons">
+
+                    <button
+                        id="createRoom"
+                        class="btn btn-primary"
+                    >
+                        Criar sala
+                    </button>
+
+                    <button
+                        id="joinRoom"
+                        class="btn"
+                    >
+                        Entrar na sala
+                    </button>
+
+                    <button
+                        id="leaveRoom"
+                        class="btn btn-danger"
+                        disabled
+                    >
+                        Sair
+                    </button>
+
+                </div>
 
 
-    <div
-        class="message"
-        id="message"
-    ></div>
+                <div
+                    id="roomStatus"
+                    class="status"
+                >
+                    Nenhuma sala conectada.
+                </div>
 
-</div>
+            </div>
 
 
-<div
-    class="room"
-    id="room"
->
+            <!-- TRANSMISSÃO -->
 
-    <div class="room-header">
+            <div class="card">
 
-        <div>
+                <div class="card-title">
+                    Transmissão
+                </div>
 
-            <strong id="roomNameDisplay">
-                Sala
-            </strong>
+                <div class="card-description">
+                    O dono da sala pode transmitir a tela.
+                </div>
 
-            <div class="room-code">
 
-                Código:
+                <div class="buttons">
 
-                <strong id="roomCodeDisplay">
-                    ------
-                </strong>
+                    <button
+                        id="startSharing"
+                        class="btn btn-success"
+                        disabled
+                    >
+                        Compartilhar tela
+                    </button>
+
+                    <button
+                        id="stopSharing"
+                        class="btn btn-danger"
+                        disabled
+                    >
+                        Parar transmissão
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="sharingStatus"
+                    class="status"
+                >
+                    Aguardando transmissão.
+                </div>
+
+            </div>
+
+
+            <!-- TELA -->
+
+            <div class="card">
+
+                <div class="card-title">
+                    Tela transmitida
+                </div>
+
+                <div class="card-description">
+                    A transmissão aparecerá aqui.
+                </div>
+
+
+                <div class="screen-container">
+
+                    <video
+                        id="remoteVideo"
+                        autoplay
+                        playsinline
+                        controls
+                    ></video>
+
+
+                    <div
+                        id="screenPlaceholder"
+                        class="screen-placeholder"
+                    >
+
+                        <h2>
+                            Nenhuma transmissão
+                        </h2>
+
+                        <p>
+                            Entre em uma sala e aguarde o dono iniciar a transmissão.
+                        </p>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
 
-        <div>
-
-            <button
-                class="primary"
-                id="goScreen"
-            >
-                🖥️ Transmitir
-            </button>
-
-            <button
-                class="danger"
-                id="leaveRoom"
-            >
-                Sair
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="members">
-
-        <strong>
-            Membros
-        </strong>
-
-        <div id="membersList"></div>
-
-    </div>
-
-</div>
-
-</section>
-
-
-<!-- =========================
-     TRANSMISSÃO
-========================= -->
-
-<section
-    class="section"
-    id="screenSection"
->
-
-<div class="card">
-
-    <div
-        style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:20px;
-        "
-    >
+        <!-- =================================
+             DIREITA
+        ================================== -->
 
         <div>
 
-            <h2 id="streamRoomName">
-                Sala
-            </h2>
 
-            <p
-                class="description"
-                style="margin:4px 0 0;"
-            >
+            <!-- SALA ATUAL -->
 
-                Código:
+            <div class="card">
 
-                <span id="streamRoomCode">
-                    ------
-                </span>
+                <div class="card-title">
+                    Sala atual
+                </div>
 
-            </p>
-
-        </div>
+                <div class="card-description">
+                    Informações da sala conectada.
+                </div>
 
 
-        <button
-            class="secondary"
-            id="backRooms"
-        >
-            ← Salas
-        </button>
+                <div class="room-code">
 
-    </div>
+                    <span>
+                        Código
+                    </span>
+
+                    <strong
+                        id="currentRoomCode"
+                    >
+                        ------
+                    </strong>
+
+                </div>
 
 
-    <div class="screen">
+                <div
+                    id="currentRoomName"
+                    class="status"
+                >
+                    Nenhuma sala.
+                </div>
 
-        <div
-            class="placeholder"
-            id="placeholder"
-        >
-
-            <div class="icon">
-                🖥️
             </div>
 
-            <h2>
-                Nenhuma transmissão
-            </h2>
 
-            <p>
-                O dono da sala pode iniciar a transmissão.
-            </p>
+            <!-- MEMBROS -->
+
+            <div class="card">
+
+                <div class="card-title">
+                    Membros
+                </div>
+
+                <div class="card-description">
+                    Pessoas conectadas à sala.
+                </div>
+
+
+                <div
+                    id="members"
+                    class="members"
+                >
+
+                    <div class="member">
+                        Nenhuma sala conectada.
+                    </div>
+
+                </div>
+
+            </div>
+
 
         </div>
-
-
-        <video
-            id="remoteVideo"
-            class="remote-video"
-            autoplay
-            playsinline
-        ></video>
-
-
-        <video
-            id="localVideo"
-            autoplay
-            muted
-            playsinline
-        ></video>
-
-    </div>
-
-
-    <div class="controls">
-
-        <button
-            class="primary"
-            id="startShare"
-        >
-            🖥️ Transmitir tela
-        </button>
-
-
-        <button
-            class="danger"
-            id="stopShare"
-            style="display:none;"
-        >
-            Parar transmissão
-        </button>
-
-    </div>
-
-
-    <div
-        class="status"
-        id="streamStatus"
-        style="margin-top:15px;text-align:center;"
-    >
-        Aguardando...
 
     </div>
 
 </div>
 
-</section>
-
-</main>
-
-
-<footer>
-
-    Privcfg Screen
-    • Créditos:
-
-    <a
-        href="https://discord.gg/privcfg"
-        target="_blank"
-        rel="noopener noreferrer"
-    >
-        discord.gg/privcfg
-    </a>
-
-</footer>
-
-
-<script src="/socket.io/socket.io.js"></script>
 
 <script>
 
-"use strict";
-
-
-/* =========================
+/* =====================================
    SOCKET
-========================= */
+===================================== */
 
 const socket = io();
 
 
+/* =====================================
+   ELEMENTOS
+===================================== */
+
+const nameScreen =
+    document.getElementById("nameScreen");
+
+const userNameInput =
+    document.getElementById("userNameInput");
+
+const enterSite =
+    document.getElementById("enterSite");
+
+const nameError =
+    document.getElementById("nameError");
+
+const headerUserName =
+    document.getElementById("headerUserName");
+
+const connectionStatus =
+    document.getElementById("connectionStatus");
+
+const roomName =
+    document.getElementById("roomName");
+
+const roomCodeInput =
+    document.getElementById("roomCodeInput");
+
+const roomPassword =
+    document.getElementById("roomPassword");
+
+const createRoomButton =
+    document.getElementById("createRoom");
+
+const joinRoomButton =
+    document.getElementById("joinRoom");
+
+const leaveRoomButton =
+    document.getElementById("leaveRoom");
+
+const currentRoomCode =
+    document.getElementById("currentRoomCode");
+
+const currentRoomName =
+    document.getElementById("currentRoomName");
+
+const membersElement =
+    document.getElementById("members");
+
+const roomStatus =
+    document.getElementById("roomStatus");
+
+const startSharingButton =
+    document.getElementById("startSharing");
+
+const stopSharingButton =
+    document.getElementById("stopSharing");
+
+const sharingStatus =
+    document.getElementById("sharingStatus");
+
+const remoteVideo =
+    document.getElementById("remoteVideo");
+
+const screenPlaceholder =
+    document.getElementById("screenPlaceholder");
+
+
+/* =====================================
+   ESTADO
+===================================== */
+
+let userName = "";
 let currentRoom = null;
 let localStream = null;
+
 let isSharing = false;
 
 const peers = new Map();
 
 
-/* =========================
-   WEBRTC
-========================= */
-
-const rtcConfig = {
-
-    iceServers: [
-
-        {
-            urls: "stun:stun.l.google.com:19302"
-        }
-
-    ]
-
-};
-
-
-/* =========================
-   ELEMENTOS
-========================= */
-
-const roomsTab =
-    document.getElementById("roomsTab");
-
-const screenTab =
-    document.getElementById("screenTab");
-
-const roomsSection =
-    document.getElementById("roomsSection");
-
-const screenSection =
-    document.getElementById("screenSection");
-
-const roomType =
-    document.getElementById("roomType");
-
-const createRoom =
-    document.getElementById("createRoom");
-
-const joinRoom =
-    document.getElementById("joinRoom");
-
-const room =
-    document.getElementById("room");
-
-const message =
-    document.getElementById("message");
-
-const roomNameDisplay =
-    document.getElementById("roomNameDisplay");
-
-const roomCodeDisplay =
-    document.getElementById("roomCodeDisplay");
-
-const membersList =
-    document.getElementById("membersList");
-
-const streamRoomName =
-    document.getElementById("streamRoomName");
-
-const streamRoomCode =
-    document.getElementById("streamRoomCode");
-
-const remoteVideo =
-    document.getElementById("remoteVideo");
-
-const localVideo =
-    document.getElementById("localVideo");
-
-const placeholder =
-    document.getElementById("placeholder");
-
-const streamStatus =
-    document.getElementById("streamStatus");
-
-const connectionStatus =
-    document.getElementById("connectionStatus");
-
-const startShare =
-    document.getElementById("startShare");
-
-const stopShare =
-    document.getElementById("stopShare");
-
-
-/* =========================
+/* =====================================
    CONEXÃO
-========================= */
+===================================== */
 
 socket.on("connect", () => {
 
     connectionStatus.textContent =
-        "● Conectado";
-
-    connectionStatus.style.color =
-        "#46d889";
+        "● Online";
 
 });
 
@@ -845,54 +923,35 @@ socket.on("disconnect", () => {
     connectionStatus.textContent =
         "● Desconectado";
 
-    connectionStatus.style.color =
-        "#ff6978";
-
 });
 
 
-/* =========================
-   TIPO DE SALA
-========================= */
+/* =====================================
+   NOME
+===================================== */
 
-roomType.onchange = () => {
-
-    document.getElementById(
-        "createPasswordBox"
-    ).style.display =
-        roomType.value === "private"
-            ? "block"
-            : "none";
-
-};
-
-
-/* =========================
-   CRIAR SALA
-========================= */
-
-createRoom.onclick = () => {
+function enterWithName() {
 
     const name =
-        document.getElementById(
-            "roomName"
-        ).value.trim();
-
-    const isPrivate =
-        roomType.value === "private";
-
-    const password =
-        document.getElementById(
-            "createPassword"
-        ).value;
+        userNameInput.value.trim();
 
 
     if (!name) {
 
-        showMessage(
-            "Digite um nome para a sala.",
-            "error"
-        );
+        nameError.textContent =
+            "Digite seu nome.";
+
+        userNameInput.focus();
+
+        return;
+
+    }
+
+
+    if (name.length < 2) {
+
+        nameError.textContent =
+            "Use pelo menos 2 caracteres.";
 
         return;
 
@@ -900,175 +959,304 @@ createRoom.onclick = () => {
 
 
     socket.emit(
-        "create-room",
-
-        {
-            name: name,
-            private: isPrivate,
-            password: password
-        },
-
-        result => {
+        "set-name",
+        name,
+        (result) => {
 
             if (!result || !result.ok) {
 
-                showMessage(
+                nameError.textContent =
                     result?.error ||
-                    "Não foi possível criar a sala.",
-                    "error"
-                );
+                    "Não foi possível definir seu nome.";
 
                 return;
 
             }
 
 
-            enterRoom(result.room);
+            userName =
+                result.name;
 
 
-            showMessage(
-                "Sala criada com sucesso!",
-                "success"
-            );
-
-        }
-    );
-
-};
+            headerUserName.textContent =
+                `👤 ${userName}`;
 
 
-/* =========================
-   ENTRAR NA SALA
-========================= */
-
-joinRoom.onclick = () => {
-
-    const code =
-        document.getElementById(
-            "joinCode"
-        ).value
-        .trim()
-        .toUpperCase();
-
-    const password =
-        document.getElementById(
-            "joinPassword"
-        ).value;
+            nameScreen.style.display =
+                "none";
 
 
-    if (!code) {
-
-        showMessage(
-            "Digite o código da sala.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    socket.emit(
-        "join-room",
-
-        {
-            code: code,
-            password: password
-        },
-
-        result => {
-
-            if (!result || !result.ok) {
-
-                showMessage(
-                    result?.error ||
-                    "Não foi possível entrar na sala.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            enterRoom(result.room);
-
-
-            showMessage(
-                "Você entrou na sala!",
-                "success"
-            );
+            roomStatus.textContent =
+                `Olá, ${userName}! Crie ou entre em uma sala.`;
 
         }
     );
-
-};
-
-
-/* =========================
-   ENTRAR NA INTERFACE
-========================= */
-
-function enterRoom(data) {
-
-    currentRoom = data;
-
-    room.classList.add("show");
-
-
-    roomNameDisplay.textContent =
-        data.name;
-
-    roomCodeDisplay.textContent =
-        data.code;
-
-    streamRoomName.textContent =
-        data.name;
-
-    streamRoomCode.textContent =
-        data.code;
-
-
-    updateMembers(data);
 
 }
 
 
-/* =========================
-   ATUALIZAR MEMBROS
-========================= */
-
-function updateMembers(data) {
-
-    if (!data) return;
+enterSite.addEventListener(
+    "click",
+    enterWithName
+);
 
 
-    /*
-     * IMPORTANTE:
-     * mantém currentRoom atualizado.
-     */
+userNameInput.addEventListener(
+    "keydown",
+    (event) => {
 
-    if (currentRoom) {
+        if (event.key === "Enter") {
 
-        currentRoom.members =
-            data.members;
+            enterWithName();
 
-        currentRoom.owner =
-            data.owner;
-
-        currentRoom.name =
-            data.name;
-
-        currentRoom.code =
-            data.code;
+        }
 
     }
+);
 
 
-    membersList.innerHTML = "";
+/* =====================================
+   CRIAR SALA
+===================================== */
+
+createRoomButton.addEventListener(
+    "click",
+    () => {
+
+        if (!userName) {
+
+            alert("Digite seu nome primeiro.");
+
+            return;
+
+        }
 
 
-    data.members.forEach(member => {
+        const name =
+            roomName.value.trim() ||
+            `${userName}'s Room`;
+
+
+        const password =
+            roomPassword.value.trim();
+
+
+        socket.emit(
+            "create-room",
+            {
+                name,
+                private: password.length > 0,
+                password,
+                userName
+            },
+            (result) => {
+
+                if (!result || !result.ok) {
+
+                    roomStatus.textContent =
+                        result?.error ||
+                        "Erro ao criar sala.";
+
+                    roomStatus.className =
+                        "status error";
+
+                    return;
+
+                }
+
+
+                enterRoom(
+                    result.room
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =====================================
+   ENTRAR NA SALA
+===================================== */
+
+joinRoomButton.addEventListener(
+    "click",
+    () => {
+
+        if (!userName) {
+
+            alert("Digite seu nome primeiro.");
+
+            return;
+
+        }
+
+
+        const code =
+            roomCodeInput.value
+                .trim()
+                .toUpperCase();
+
+
+        if (!code) {
+
+            roomStatus.textContent =
+                "Digite o código da sala.";
+
+            roomStatus.className =
+                "status error";
+
+            return;
+
+        }
+
+
+        socket.emit(
+            "join-room",
+            {
+                code,
+                password:
+                    roomPassword.value.trim(),
+                userName
+            },
+            (result) => {
+
+                if (!result || !result.ok) {
+
+                    roomStatus.textContent =
+                        result?.error ||
+                        "Não foi possível entrar na sala.";
+
+                    roomStatus.className =
+                        "status error";
+
+                    return;
+
+                }
+
+
+                enterRoom(
+                    result.room
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =====================================
+   ENTROU NA SALA
+===================================== */
+
+function enterRoom(room) {
+
+    currentRoom =
+        room;
+
+
+    currentRoomCode.textContent =
+        room.code;
+
+
+    currentRoomName.textContent =
+        room.name;
+
+
+    roomStatus.textContent =
+        `Conectado à sala ${room.code}.`;
+
+    roomStatus.className =
+        "status success";
+
+
+    leaveRoomButton.disabled =
+        false;
+
+
+    updateMembers(
+        room.members
+    );
+
+
+    const isOwner =
+        room.owner === socket.id;
+
+
+    startSharingButton.disabled =
+        !isOwner;
+
+
+    stopSharingButton.disabled =
+        true;
+
+
+    sharingStatus.textContent =
+        isOwner
+            ? "Você é o dono da sala."
+            : "Aguardando o dono iniciar a transmissão.";
+
+
+    sharingStatus.className =
+        "status";
+
+
+    console.log(
+        "Sala:",
+        room
+    );
+
+}
+
+
+/* =====================================
+   SALA ATUALIZADA
+===================================== */
+
+socket.on(
+    "room-updated",
+    (room) => {
+
+        currentRoom =
+            room;
+
+
+        currentRoomCode.textContent =
+            room.code;
+
+
+        currentRoomName.textContent =
+            room.name;
+
+
+        updateMembers(
+            room.members
+        );
+
+
+        const isOwner =
+            room.owner === socket.id;
+
+
+        startSharingButton.disabled =
+            !isOwner || isSharing;
+
+    }
+);
+
+
+/* =====================================
+   MEMBROS
+===================================== */
+
+function updateMembers(members) {
+
+    membersElement.innerHTML = "";
+
+
+    if (!members || members.length === 0) {
 
         const div =
             document.createElement("div");
@@ -1076,583 +1264,495 @@ function updateMembers(data) {
         div.className =
             "member";
 
+        div.textContent =
+            "Nenhum membro.";
 
-        if (member.id === socket.id) {
+        membersElement.appendChild(
+            div
+        );
 
-            div.textContent =
-                member.owner
-                    ? "Você • Dono"
-                    : "Você";
+        return;
 
-        } else {
+    }
 
-            div.textContent =
-                member.owner
-                    ? "Dono da sala"
-                    : "Membro conectado";
+
+    members.forEach(
+        (member) => {
+
+            const div =
+                document.createElement("div");
+
+
+            div.className =
+                "member";
+
+
+            if (member.id === socket.id) {
+
+                div.classList.add("me");
+
+                div.textContent =
+                    member.owner
+                        ? `👑 ${member.name} • Você`
+                        : `👤 ${member.name} • Você`;
+
+            } else {
+
+                div.textContent =
+                    member.owner
+                        ? `👑 ${member.name}`
+                        : `👤 ${member.name}`;
+
+            }
+
+
+            membersElement.appendChild(
+                div
+            );
 
         }
-
-
-        membersList.appendChild(div);
-
-    });
+    );
 
 }
 
 
-/* =========================
-   ROOM UPDATED
-========================= */
+/* =====================================
+   MEMBRO ENTROU
+===================================== */
 
 socket.on(
-    "room-updated",
-    data => {
+    "member-joined",
+    (member) => {
 
-        currentRoom = data;
-
-        updateMembers(data);
+        console.log(
+            `${member.name} entrou na sala.`
+        );
 
     }
 );
 
 
-/* =========================
-   ABAS
-========================= */
+/* =====================================
+   MEMBRO SAIU
+===================================== */
 
-roomsTab.onclick = () => {
+socket.on(
+    "member-left",
+    (member) => {
 
-    roomsTab.classList.add("active");
+        const peer =
+            peers.get(member.id);
 
-    screenTab.classList.remove("active");
+        if (peer) {
 
-    roomsSection.classList.add("active");
+            peer.close();
 
-    screenSection.classList.remove("active");
-
-};
-
-
-screenTab.onclick = () => {
-
-    if (!currentRoom) {
-
-        showMessage(
-            "Entre em uma sala primeiro.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    openScreen();
-
-};
-
-
-function openScreen() {
-
-    roomsTab.classList.remove("active");
-
-    screenTab.classList.add("active");
-
-    roomsSection.classList.remove("active");
-
-    screenSection.classList.add("active");
-
-}
-
-
-/* =========================
-   BOTÕES
-========================= */
-
-document.getElementById(
-    "goScreen"
-).onclick = openScreen;
-
-
-document.getElementById(
-    "backRooms"
-).onclick = () => {
-
-    roomsTab.click();
-
-};
-
-
-/* =========================
-   SAIR
-========================= */
-
-document.getElementById(
-    "leaveRoom"
-).onclick = () => {
-
-    stopSharing(false);
-
-    socket.emit("leave-room");
-
-    currentRoom = null;
-
-    room.classList.remove("show");
-
-    roomsTab.click();
-
-};
-
-
-/* =========================
-   INICIAR COMPARTILHAMENTO
-========================= */
-
-startShare.onclick = async () => {
-
-    if (!currentRoom) {
-
-        showMessage(
-            "Entre em uma sala primeiro.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if (
-        currentRoom.owner !== socket.id
-    ) {
-
-        showMessage(
-            "Somente o dono da sala pode transmitir.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if (isSharing) return;
-
-
-    try {
-
-        localStream =
-            await navigator.mediaDevices
-                .getDisplayMedia({
-
-                    video: true,
-
-                    audio: false
-
-                });
-
-
-        isSharing = true;
-
-
-        localVideo.srcObject =
-            localStream;
-
-        localVideo.style.display =
-            "block";
-
-        remoteVideo.style.display =
-            "none";
-
-        placeholder.style.display =
-            "none";
-
-
-        startShare.style.display =
-            "none";
-
-        stopShare.style.display =
-            "inline-block";
-
-
-        streamStatus.textContent =
-            "● Você está transmitindo";
-
-        streamStatus.style.color =
-            "#46d889";
-
-
-        /*
-         * Avisa todos os membros.
-         */
-
-        socket.emit(
-            "start-sharing"
-        );
-
-
-        /*
-         * Se o usuário parar pelo navegador,
-         * encerra a transmissão.
-         */
-
-        const track =
-            localStream.getVideoTracks()[0];
-
-
-        if (track) {
-
-            track.onended = () => {
-
-                stopSharing();
-
-            };
-
-        }
-
-
-        /*
-         * Cria conexão com todos
-         * os membros atuais.
-         */
-
-        const members =
-            currentRoom.members || [];
-
-
-        for (
-            const member of members
-        ) {
-
-            if (
-                member.id === socket.id
-            ) {
-
-                continue;
-
-            }
-
-
-            await createOfferFor(
+            peers.delete(
                 member.id
             );
 
         }
 
+    }
+);
 
-    } catch (error) {
 
-        console.error(
-            "Erro ao iniciar transmissão:",
-            error
+/* =====================================
+   NOVO DONO
+===================================== */
+
+socket.on(
+    "owner-changed",
+    ({ owner }) => {
+
+        if (!currentRoom) {
+            return;
+        }
+
+
+        currentRoom.owner =
+            owner;
+
+
+        const isOwner =
+            owner === socket.id;
+
+
+        startSharingButton.disabled =
+            !isOwner || isSharing;
+
+
+        sharingStatus.textContent =
+            isOwner
+                ? "Você é o dono da sala."
+                : "Aguardando transmissão.";
+
+    }
+);
+
+
+/* =====================================
+   COMEÇOU TRANSMISSÃO
+===================================== */
+
+socket.on(
+    "screen-sharing-started",
+    ({ hostId }) => {
+
+        sharingStatus.textContent =
+            "🔴 Transmissão iniciada.";
+
+        sharingStatus.className =
+            "status success";
+
+
+        if (hostId !== socket.id) {
+
+            screenPlaceholder.innerHTML = `
+                <h2>Conectando à transmissão...</h2>
+                <p>Aguarde alguns segundos.</p>
+            `;
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   PAROU TRANSMISSÃO
+===================================== */
+
+socket.on(
+    "screen-sharing-stopped",
+    () => {
+
+        sharingStatus.textContent =
+            "A transmissão foi encerrada.";
+
+        sharingStatus.className =
+            "status";
+
+
+        remoteVideo.srcObject =
+            null;
+
+
+        remoteVideo.style.display =
+            "none";
+
+
+        screenPlaceholder.style.display =
+            "block";
+
+
+        peers.forEach(
+            peer => peer.close()
         );
 
 
-        streamStatus.textContent =
-            "Transmissão cancelada.";
-
-        streamStatus.style.color =
-            "#ff6978";
+        peers.clear();
 
     }
-
-};
-
-
-/* =========================
-   PARAR TRANSMISSÃO
-========================= */
-
-stopShare.onclick = () => {
-
-    stopSharing();
-
-};
+);
 
 
-function stopSharing(notify = true) {
+/* =====================================
+   COMPARTILHAR TELA
+===================================== */
 
-    isSharing = false;
+startSharingButton.addEventListener(
+    "click",
+    async () => {
+
+        if (!currentRoom) {
+
+            alert(
+                "Entre em uma sala primeiro."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            currentRoom.owner !==
+            socket.id
+        ) {
+
+            alert(
+                "Somente o dono da sala pode transmitir."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            localStream =
+                await navigator.mediaDevices
+                    .getDisplayMedia({
+                        video: true,
+                        audio: true
+                    });
+
+
+            isSharing =
+                true;
+
+
+            startSharingButton.disabled =
+                true;
+
+
+            stopSharingButton.disabled =
+                false;
+
+
+            sharingStatus.textContent =
+                "🔴 Sua tela está sendo transmitida.";
+
+            sharingStatus.className =
+                "status success";
+
+
+            socket.emit(
+                "start-sharing"
+            );
+
+
+            localStream
+                .getVideoTracks()[0]
+                .addEventListener(
+                    "ended",
+                    stopSharing
+                );
+
+
+            /*
+             * Criar conexão com todos
+             * os membros da sala.
+             */
+
+            currentRoom.members.forEach(
+                member => {
+
+                    if (
+                        member.id !==
+                        socket.id
+                    ) {
+
+                        createOfferFor(
+                            member.id
+                        );
+
+                    }
+
+                }
+            );
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+            sharingStatus.textContent =
+                "Não foi possível compartilhar a tela.";
+
+            sharingStatus.className =
+                "status error";
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   PARAR
+===================================== */
+
+stopSharingButton.addEventListener(
+    "click",
+    stopSharing
+);
+
+
+function stopSharing() {
+
+    if (!isSharing) {
+        return;
+    }
+
+
+    isSharing =
+        false;
 
 
     if (localStream) {
 
         localStream
             .getTracks()
-            .forEach(track => {
+            .forEach(
+                track =>
+                    track.stop()
+            );
 
-                track.stop();
-
-            });
-
-        localStream = null;
-
-    }
-
-
-    localVideo.srcObject =
-        null;
-
-    localVideo.style.display =
-        "none";
-
-
-    startShare.style.display =
-        "inline-block";
-
-    stopShare.style.display =
-        "none";
-
-
-    if (
-        !remoteVideo.srcObject
-    ) {
-
-        placeholder.style.display =
-            "block";
+        localStream =
+            null;
 
     }
 
-
-    streamStatus.textContent =
-        "Aguardando transmissão";
-
-    streamStatus.style.color =
-        "#777b8d";
-
-
-    closeAllPeers();
-
-
-    if (notify) {
-
-        socket.emit(
-            "stop-sharing"
-        );
-
-    }
-
-}
-
-
-/* =========================
-   FECHAR PEERS
-========================= */
-
-function closeAllPeers() {
 
     peers.forEach(
-        peer => {
-
-            try {
-
-                peer.close();
-
-            } catch (error) {}
-
-        }
+        peer =>
+            peer.close()
     );
 
 
     peers.clear();
 
+
+    socket.emit(
+        "stop-sharing"
+    );
+
+
+    startSharingButton.disabled =
+        currentRoom?.owner !== socket.id;
+
+
+    stopSharingButton.disabled =
+        true;
+
+
+    sharingStatus.textContent =
+        "Transmissão parada.";
+
+    sharingStatus.className =
+        "status";
+
 }
 
 
-/* =========================
-   CRIAR PEER
-========================= */
+/* =====================================
+   PEER CONNECTION
+===================================== */
 
-async function createPeer(targetId) {
+function createPeer(
+    targetId
+) {
 
-    if (peers.has(targetId)) {
+    const existing =
+        peers.get(targetId);
 
-        return peers.get(targetId);
+
+    if (existing) {
+
+        return existing;
 
     }
 
 
-    const pc =
-        new RTCPeerConnection(
-            rtcConfig
-        );
+    const peer =
+        new RTCPeerConnection({
+            iceServers: [
+                {
+                    urls:
+                        "stun:stun.l.google.com:19302"
+                },
+                {
+                    urls:
+                        "stun:stun1.l.google.com:19302"
+                }
+            ]
+        });
 
 
     peers.set(
         targetId,
-        pc
+        peer
     );
 
 
     /*
-     * Se eu sou o transmissor,
-     * adiciono minha tela.
+     * Envia candidatos ICE
      */
 
-    if (localStream) {
-
-        localStream
-            .getTracks()
-            .forEach(track => {
-
-                pc.addTrack(
-                    track,
-                    localStream
-                );
-
-            });
-
-    }
-
-
-    /*
-     * ICE
-     */
-
-    pc.onicecandidate =
+    peer.onicecandidate =
         event => {
 
             if (
-                !event.candidate
+                event.candidate
             ) {
 
-                return;
+                socket.emit(
+                    "webrtc-ice-candidate",
+                    {
+                        target:
+                            targetId,
+                        candidate:
+                            event.candidate
+                    }
+                );
 
             }
-
-
-            socket.emit(
-                "webrtc-ice-candidate",
-
-                {
-                    target: targetId,
-
-                    candidate:
-                        event.candidate
-
-                }
-            );
 
         };
 
 
     /*
-     * RECEBER VÍDEO
+     * Recebe a tela
      */
 
-    pc.ontrack =
+    peer.ontrack =
         event => {
 
-            console.log(
-                "Stream recebido de:",
-                targetId
-            );
+            const stream =
+                event.streams[0];
 
 
-            if (
-                event.streams &&
-                event.streams[0]
-            ) {
-
-                remoteVideo.srcObject =
-                    event.streams[0];
-
-            } else {
-
-                /*
-                 * Fallback para navegadores
-                 * que não fornecem streams.
-                 */
-
-                let stream =
-                    remoteVideo.srcObject;
-
-
-                if (!stream) {
-
-                    stream =
-                        new MediaStream();
-
-                    remoteVideo.srcObject =
-                        stream;
-
-                }
-
-
-                stream.addTrack(
-                    event.track
-                );
-
+            if (!stream) {
+                return;
             }
+
+
+            remoteVideo.srcObject =
+                stream;
 
 
             remoteVideo.style.display =
                 "block";
 
-            localVideo.style.display =
+
+            screenPlaceholder.style.display =
                 "none";
 
-            placeholder.style.display =
-                "none";
 
+            sharingStatus.textContent =
+                "🔴 Recebendo transmissão.";
 
-            streamStatus.textContent =
-                "● Recebendo transmissão";
-
-            streamStatus.style.color =
-                "#46d889";
-
-
-            /*
-             * Alguns navegadores podem
-             * bloquear autoplay.
-             */
-
-            remoteVideo.play()
-                .catch(() => {});
+            sharingStatus.className =
+                "status success";
 
         };
 
 
-    /*
-     * Estado da conexão
-     */
-
-    pc.onconnectionstatechange =
+    peer.onconnectionstatechange =
         () => {
 
-            console.log(
-                "WebRTC:",
-                targetId,
-                pc.connectionState
-            );
-
-
             if (
-                pc.connectionState ===
-                "failed"
+                peer.connectionState ===
+                    "failed" ||
+                peer.connectionState ===
+                    "closed"
             ) {
 
-                peers.delete(
-                    targetId
-                );
-
-                pc.close();
-
-                streamStatus.textContent =
-                    "Falha na conexão com a transmissão.";
-
-                streamStatus.style.color =
-                    "#ff6978";
-
-            }
-
-
-            if (
-                pc.connectionState ===
-                "closed"
-            ) {
+                peer.close();
 
                 peers.delete(
                     targetId
@@ -1663,14 +1763,14 @@ async function createPeer(targetId) {
         };
 
 
-    return pc;
+    return peer;
 
 }
 
 
-/* =========================
-   CRIAR OFERTA
-========================= */
+/* =====================================
+   CRIAR OFFER
+===================================== */
 
 async function createOfferFor(
     targetId
@@ -1678,77 +1778,52 @@ async function createOfferFor(
 
     try {
 
-        const pc =
-            await createPeer(
+        const peer =
+            createPeer(
                 targetId
             );
 
 
-        /*
-         * Garante que a tela atual
-         * esteja adicionada ao peer.
-         */
-
         if (localStream) {
 
-            const senders =
-                pc.getSenders();
+            localStream
+                .getTracks()
+                .forEach(
+                    track => {
 
+                        peer.addTrack(
+                            track,
+                            localStream
+                        );
 
-            const videoTrack =
-                localStream
-                    .getVideoTracks()[0];
-
-
-            const alreadyAdded =
-                senders.some(
-                    sender =>
-                        sender.track ===
-                        videoTrack
+                    }
                 );
-
-
-            if (
-                videoTrack &&
-                !alreadyAdded
-            ) {
-
-                pc.addTrack(
-                    videoTrack,
-                    localStream
-                );
-
-            }
 
         }
 
 
         const offer =
-            await pc.createOffer();
+            await peer.createOffer();
 
 
-        await pc.setLocalDescription(
+        await peer.setLocalDescription(
             offer
         );
 
 
         socket.emit(
             "webrtc-offer",
-
             {
-                target: targetId,
-
-                offer:
-                    pc.localDescription
-
+                target:
+                    targetId,
+                offer
             }
         );
-
 
     } catch (error) {
 
         console.error(
-            "Erro ao criar oferta:",
+            "Erro criando offer:",
             error
         );
 
@@ -1757,32 +1832,23 @@ async function createOfferFor(
 }
 
 
-/* =========================
-   RECEBER OFERTA
-========================= */
+/* =====================================
+   RECEBER OFFER
+===================================== */
 
 socket.on(
     "webrtc-offer",
-
-    async ({
-        from,
-        offer
-    }) => {
+    async ({ from, offer }) => {
 
         try {
 
-            /*
-             * O membro que recebe
-             * cria o peer sem localStream.
-             */
-
-            const pc =
-                await createPeer(
+            const peer =
+                createPeer(
                     from
                 );
 
 
-            await pc.setRemoteDescription(
+            await peer.setRemoteDescription(
                 new RTCSessionDescription(
                     offer
                 )
@@ -1790,31 +1856,27 @@ socket.on(
 
 
             const answer =
-                await pc.createAnswer();
+                await peer.createAnswer();
 
 
-            await pc.setLocalDescription(
+            await peer.setLocalDescription(
                 answer
             );
 
 
             socket.emit(
                 "webrtc-answer",
-
                 {
-                    target: from,
-
-                    answer:
-                        pc.localDescription
-
+                    target:
+                        from,
+                    answer
                 }
             );
-
 
         } catch (error) {
 
             console.error(
-                "Erro ao receber oferta:",
+                "Erro recebendo offer:",
                 error
             );
 
@@ -1824,47 +1886,35 @@ socket.on(
 );
 
 
-/* =========================
+/* =====================================
    RECEBER ANSWER
-========================= */
+===================================== */
 
 socket.on(
     "webrtc-answer",
-
-    async ({
-        from,
-        answer
-    }) => {
+    async ({ from, answer }) => {
 
         try {
 
-            const pc =
+            const peer =
                 peers.get(from);
 
 
-            if (!pc) {
-
-                console.warn(
-                    "Peer não encontrado:",
-                    from
-                );
-
+            if (!peer) {
                 return;
-
             }
 
 
-            await pc.setRemoteDescription(
+            await peer.setRemoteDescription(
                 new RTCSessionDescription(
                     answer
                 )
             );
 
-
         } catch (error) {
 
             console.error(
-                "Erro ao receber answer:",
+                "Erro recebendo answer:",
                 error
             );
 
@@ -1874,49 +1924,34 @@ socket.on(
 );
 
 
-/* =========================
+/* =====================================
    ICE
-========================= */
+===================================== */
 
 socket.on(
     "webrtc-ice-candidate",
-
-    async ({
-        from,
-        candidate
-    }) => {
+    async ({ from, candidate }) => {
 
         try {
 
-            const pc =
+            const peer =
                 peers.get(from);
 
 
-            if (!pc) {
+            if (!peer) {
+                return;
+            }
 
-                console.warn(
-                    "Peer não encontrado para ICE:",
-                    from
+
+            if (candidate) {
+
+                await peer.addIceCandidate(
+                    new RTCIceCandidate(
+                        candidate
+                    )
                 );
 
-                return;
-
             }
-
-
-            if (!candidate) {
-
-                return;
-
-            }
-
-
-            await pc.addIceCandidate(
-                new RTCIceCandidate(
-                    candidate
-                )
-            );
-
 
         } catch (error) {
 
@@ -1931,186 +1966,91 @@ socket.on(
 );
 
 
-/* =========================
-   NOVO MEMBRO
-========================= */
+/* =====================================
+   SAIR DA SALA
+===================================== */
 
-socket.on(
-    "member-joined",
+leaveRoomButton.addEventListener(
+    "click",
+    () => {
 
-    async data => {
+        socket.emit(
+            "leave-room"
+        );
 
-        /*
-         * Se estou transmitindo,
-         * envio minha tela ao novo membro.
-         */
 
-        if (
-            isSharing &&
-            localStream &&
-            currentRoom
-        ) {
+        currentRoom =
+            null;
 
-            try {
 
-                await createOfferFor(
-                    data.id
-                );
+        currentRoomCode.textContent =
+            "------";
 
-            } catch (error) {
 
-                console.error(
-                    "Erro enviando tela ao novo membro:",
-                    error
-                );
+        currentRoomName.textContent =
+            "Nenhuma sala.";
 
-            }
+
+        roomStatus.textContent =
+            "Você saiu da sala.";
+
+        roomStatus.className =
+            "status";
+
+
+        membersElement.innerHTML = `
+            <div class="member">
+                Nenhuma sala conectada.
+            </div>
+        `;
+
+
+        leaveRoomButton.disabled =
+            true;
+
+
+        startSharingButton.disabled =
+            true;
+
+
+        stopSharingButton.disabled =
+            true;
+
+
+        if (isSharing) {
+
+            stopSharing();
 
         }
 
-    }
-);
-
-
-/* =========================
-   TRANSMISSÃO INICIADA
-========================= */
-
-socket.on(
-    "screen-sharing-started",
-
-    data => {
-
-        openScreen();
-
-
-        streamStatus.textContent =
-            "Conectando à transmissão...";
-
-        streamStatus.style.color =
-            "#ffc857";
-
-    }
-);
-
-
-/* =========================
-   TRANSMISSÃO PARADA
-========================= */
-
-socket.on(
-    "screen-sharing-stopped",
-
-    () => {
 
         remoteVideo.srcObject =
             null;
+
 
         remoteVideo.style.display =
             "none";
 
 
-        placeholder.style.display =
+        screenPlaceholder.style.display =
             "block";
 
-
-        streamStatus.textContent =
-            "A transmissão terminou.";
-
-        streamStatus.style.color =
-            "#777b8d";
-
-
-        closeAllPeers();
-
     }
 );
 
 
-/* =========================
-   MEMBRO SAIU
-========================= */
+/* =====================================
+   INICIALIZAÇÃO
+===================================== */
 
-socket.on(
-    "member-left",
+window.addEventListener(
+    "load",
+    () => {
 
-    data => {
-
-        const peer =
-            peers.get(data.id);
-
-
-        if (peer) {
-
-            try {
-
-                peer.close();
-
-            } catch (error) {}
-
-            peers.delete(
-                data.id
-            );
-
-        }
+        userNameInput.focus();
 
     }
 );
-
-
-/* =========================
-   NOVO DONO
-========================= */
-
-socket.on(
-    "owner-changed",
-
-    data => {
-
-        if (currentRoom) {
-
-            currentRoom.owner =
-                data.owner;
-
-        }
-
-
-        showMessage(
-            "O dono da sala mudou.",
-            "success"
-        );
-
-    }
-);
-
-
-/* =========================
-   MENSAGENS
-========================= */
-
-function showMessage(
-    text,
-    type
-) {
-
-    message.textContent =
-        text;
-
-    message.className =
-        "message show " + type;
-
-
-    setTimeout(
-        () => {
-
-            message.className =
-                "message";
-
-        },
-        3500
-    );
-
-}
 
 </script>
 
