@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Privcfg Screen</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: #08090d;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    height: 70px;
+    background: #101116;
+    border-bottom: 1px solid #242630;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #695cff;
+}
+
+.status {
+    color: #777b8d;
+    font-size: 13px;
+}
+
+main {
+    width: min(950px, 92%);
+    margin: auto;
+    padding: 40px 0;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.title h1 {
+    font-size: 38px;
+    margin-bottom: 10px;
+}
+
+.title p {
+    color: #858997;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.tab {
+    border: 1px solid #292c36;
+    background: #15161d;
+    color: #888c9b;
+    padding: 12px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tab.active {
+    background: #6254f5;
+    border-color: #6254f5;
+    color: white;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.card {
+    background: #101116;
+    border: 1px solid #252732;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 18px;
+}
+
+.card h2 {
+    margin-bottom: 8px;
+}
+
+.description {
+    color: #777b8d;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+label {
+    display: block;
+    color: #aab0bf;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 13px;
+    border-radius: 9px;
+    border: 1px solid #2a2d38;
+    background: #08090d;
+    color: white;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #6254f5;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 13px 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary {
+    background: #6254f5;
+    color: white;
+}
+
+.primary:hover {
+    background: #7568ff;
+}
+
+.secondary {
+    background: #242630;
+    color: white;
+}
+
+.danger {
+    background: #bd3949;
+    color: white;
+}
+
+.full {
+    width: 100%;
+    margin-top: 18px;
+}
+
+.code {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.code input {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+
+.message {
+    display: none;
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.message.show {
+    display: block;
+}
+
+.error {
+    background: rgba(210,65,82,.12);
+    color: #ff7887;
+}
+
+.success {
+    background: rgba(60,200,125,.12);
+    color: #62dda0;
+}
+
+.room {
+    display: none;
+    background: #11131a;
+    border: 1px solid #292c36;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.room.show {
+    display: block;
+}
+
+.room-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.room-code {
+    color: #777b8d;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.members {
+    margin-top: 20px;
+}
+
+.member {
+    padding: 12px 0;
+    border-bottom: 1px solid #242630;
+    color: #bbbfc9;
+}
+
+.screen {
+    height: 480px;
+    border-radius: 16px;
+    border: 1px solid #292c36;
+    background: #030305;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.placeholder {
+    text-align: center;
+    color: #777b8d;
+}
+
+.placeholder .icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: black;
+}
+
+#localVideo {
+    display: none;
+}
+
+.remote-video {
+    display: none;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #555966;
+    font-size: 12px;
+}
+
+footer a {
+    color: #695cff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+@media(max-width:650px) {
+    header {
+        padding: 0 20px;
+    }
+
+    .status {
+        display: none;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .screen {
+        height: 330px;
+    }
+
+    .room-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <span>Privcfg</span> Screen
+    </div>
+
+    <div class="status" id="connectionStatus">
+        Conectando...
+    </div>
+</header>
+
+
+<main>
+
+<div class="title">
+    <h1>Privcfg Screen</h1>
+    <p>Compartilhe sua tela com sua sala.</p>
+</div>
+
+
+<div class="tabs">
+
+    <button class="tab active" id="roomsTab">
+        🏠 Salas
+    </button>
+
+    <button class="tab" id="screenTab">
+        🖥️ Transmissão
+    </button>
+
+</div>
+
+
+<!-- SALAS -->
+
+<section class="section active" id="roomsSection">
+
+<div class="card">
+
+    <h2>Criar sala</h2>
+
+    <p class="description">
+        Crie uma sala e envie o código para seus amigos.
+    </p>
+
+    <div class="grid">
+
+        <div>
+            <label>Nome da sala</label>
+
+            <input
+                id="roomName"
+                placeholder="Minha sala"
+                maxlength="40"
+            >
+        </div>
+
+        <div>
+            <label>Tipo</label>
+
+            <select id="roomType">
+
+                <option value="public">
+                    Pública
+                </option>
+
+                <option value="private">
+                    🔒 Privada
+                </option>
+
+            </select>
+        </div>
+
+    </div>
+
+
+    <div
+        id="createPasswordBox"
+        style="display:none;margin-top:15px;"
+    >
+
+        <label>Senha</label>
+
+        <input
+            id="createPassword"
+            type="password"
+            placeholder="Senha da sala"
+        >
+
+    </div>
+
+
+    <button
+        class="primary full"
+        id="createRoom"
+    >
+        + Criar sala
+    </button>
+
+</div>
+
+
+<div class="card">
+
+    <h2>Entrar em uma sala</h2>
+
+    <p class="description">
+        Use o código enviado pelo criador da sala.
+    </p>
+
+    <label>Código</label>
+
+    <input
+        id="joinCode"
+        maxlength="6"
+        placeholder="ABC123"
+        style="text-transform:uppercase"
+    >
+
+
+    <div
+        id="joinPasswordBox"
+        style="display:none;margin-top:15px;"
+    >
+
+        <label>Senha</label>
+
+        <input
+            id="joinPassword"
+            type="password"
+            placeholder="Senha"
+        >
+
+    </div>
+
+
+    <button
+        class="secondary full"
+        id="joinRoom"
+    >
+        Entrar na sala
+    </button>
+
+    <div
+        class="message"
+        id="message"
+    ></div>
+
+</div>
+
+
+<div
+    class="room"
+    id="room"
+>
+
+    <div class="room-header">
+
+        <div>
+
+            <strong id="roomNameDisplay">
+                Sala
+            </strong>
+
+            <div class="room-code">
+                Código:
+                <strong id="roomCodeDisplay">
+                    ------
+                </strong>
+            </div>
+
+        </div>
+
+        <div>
+
+            <button
+                class="primary"
+                id="goScreen"
+            >
+                🖥️ Transmitir
+            </button>
+
+            <button
+                class="danger"
+                id="leaveRoom"
+            >
+                Sair
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="members">
+
+        <strong>
+            Membros
+        </strong>
+
+        <div id="membersList"></div>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- TRANSMISSÃO -->
+
+<section
+    class="section"
+    id="screenSection"
+>
+
+<div class="card">
+
+    <div
+        style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+        "
+    >
+
+        <div>
+
+            <h2 id="streamRoomName">
+                Sala
+            </h2>
+
+            <p
+                class="description"
+                style="margin:4px 0 0;"
+            >
+                Código:
+                <span id="streamRoomCode">
+                    ------
+                </span>
+            </p>
+
+        </div>
+
+        <button
+            class="secondary"
+            id="backRooms"
+        >
+            ← Salas
+        </button>
+
+    </div>
+
+
+    <div class="screen">
+
+        <div
+            class="placeholder"
+            id="placeholder"
+        >
+
+            <div class="icon">
+                🖥️
+            </div>
+
+            <h2>
+                Nenhuma transmissão
+            </h2>
+
+            <p>
+                O dono da sala pode iniciar a transmissão.
+            </p>
+
+        </div>
+
+
+        <video
+            id="remoteVideo"
+            class="remote-video"
+            autoplay
+            playsinline
+        ></video>
+
+
+        <video
+            id="localVideo"
+            autoplay
+            muted
+            playsinline
+        ></video>
+
+    </div>
+
+
+    <div class="controls">
+
+        <button
+            class="primary"
+            id="startShare"
+        >
+            🖥️ Transmitir tela
+        </button>
+
+        <button
+            class="danger"
+            id="stopShare"
+            style="display:none;"
+        >
+            Parar transmissão
+        </button>
+
+    </div>
+
+
+    <div
+        class="status"
+        id="streamStatus"
+    >
+        Aguardando...
+    </div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+    Privcfg Screen
+    • Créditos:
+    <a
+        href="https://discord.gg/privcfg"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        discord.gg/privcfg
+    </a>
+
+</footer>
+
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+const socket = io();
+
+let currentRoom = null;
+let localStream = null;
+
+const peers = new Map();
+
+const rtcConfig = {
+    iceServers: [
+        {
+            urls: "stun:stun.l.google.com:19302"
+        }
+    ]
+};
+
+
+const roomsTab =
+    document.getElementById("roomsTab");
+
+const screenTab =
+    document.getElementById("screenTab");
+
+const roomsSection =
+    document.getElementById("roomsSection");
+
+const screenSection =
+    document.getElementById("screenSection");
+
+const roomType =
+    document.getElementById("roomType");
+
+const createRoom =
+    document.getElementById("createRoom");
+
+const joinRoom =
+    document.getElementById("joinRoom");
+
+const room =
+    document.getElementById("room");
+
+const message =
+    document.getElementById("message");
+
+const roomNameDisplay =
+    document.getElementById("roomNameDisplay");
+
+const roomCodeDisplay =
+    document.getElementById("roomCodeDisplay");
+
+const membersList =
+    document.getElementById("membersList");
+
+const streamRoomName =
+    document.getElementById("streamRoomName");
+
+const streamRoomCode =
+    document.getElementById("streamRoomCode");
+
+const remoteVideo =
+    document.getElementById("remoteVideo");
+
+const localVideo =
+    document.getElementById("localVideo");
+
+const placeholder =
+    document.getElementById("placeholder");
+
+const streamStatus =
+    document.getElementById("streamStatus");
+
+const connectionStatus =
+    document.getElementById("connectionStatus");
+
+
+/* CONEXÃO */
+
+socket.on("connect", () => {
+
+    connectionStatus.textContent =
+        "● Conectado";
+
+    connectionStatus.style.color =
+        "#46d889";
+
+});
+
+
+socket.on("disconnect", () => {
+
+    connectionStatus.textContent =
+        "● Desconectado";
+
+    connectionStatus.style.color =
+        "#ff6978";
+
+});
+
+
+/* TIPO DE SALA */
+
+roomType.onchange = () => {
+
+    document.getElementById(
+        "createPasswordBox"
+    ).style.display =
+        roomType.value === "private"
+            ? "block"
+            : "none";
+
+};
+
+
+/* CRIAR SALA */
+
+createRoom.onclick = () => {
+
+    const name =
+        document.getElementById(
+            "roomName"
+        ).value.trim();
+
+    const isPrivate =
+        roomType.value === "private";
+
+    const password =
+        document.getElementById(
+            "createPassword"
+        ).value;
+
+
+    if (!name) {
+
+        showMessage(
+            "Digite um nome para a sala.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    socket.emit(
+        "create-room",
+        {
+            name,
+            private: isPrivate,
+            password
+        },
+        (result) => {
+
+            if (!result.ok) {
+
+                showMessage(
+                    result.error,
+                    "error"
+                );
+
+                return;
+            }
+
+            enterRoom(result.room);
+
+            showMessage(
+                "Sala criada com sucesso!",
+                "success"
+            );
+
+        }
+    );
+
+};
+
+
+/* ENTRAR */
+
+joinRoom.onclick = () => {
+
+    const code =
+        document.getElementById(
+            "joinCode"
+        ).value
+        .trim()
+        .toUpperCase();
+
+    const password =
+        document.getElementById(
+            "joinPassword"
+        ).value;
+
+
+    if (!code) {
+
+        showMessage(
+            "Digite o código da sala.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    socket.emit(
+        "join-room",
+        {
+            code,
+            password
+        },
+        (result) => {
+
+            if (!result.ok) {
+
+                showMessage(
+                    result.error,
+                    "error"
+                );
+
+                return;
+            }
+
+            enterRoom(result.room);
+
+            showMessage(
+                "Você entrou na sala!",
+                "success"
+            );
+
+        }
+    );
+
+};
+
+
+/* ENTRAR NA INTERFACE */
+
+function enterRoom(data) {
+
+    currentRoom = data;
+
+    room.classList.add("show");
+
+    roomNameDisplay.textContent =
+        data.name;
+
+    roomCodeDisplay.textContent =
+        data.code;
+
+    streamRoomName.textContent =
+        data.name;
+
+    streamRoomCode.textContent =
+        data.code;
+
+    updateMembers(data);
+
+}
+
+
+/* MEMBROS */
+
+function updateMembers(data) {
+
+    membersList.innerHTML = "";
+
+    data.members.forEach(member => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "member";
+
+        div.textContent =
+            member.id === socket.id
+                ? "Você"
+                : "Membro conectado";
+
+        membersList.appendChild(div);
+
+    });
+
+}
+
+
+socket.on(
+    "room-updated",
+    updateMembers
+);
+
+
+/* ABAS */
+
+roomsTab.onclick = () => {
+
+    roomsTab.classList.add("active");
+    screenTab.classList.remove("active");
+
+    roomsSection.classList.add("active");
+    screenSection.classList.remove("active");
+
+};
+
+
+screenTab.onclick = () => {
+
+    if (!currentRoom) {
+
+        showMessage(
+            "Entre em uma sala primeiro.",
+            "error"
+        );
+
+        return;
+    }
+
+    openScreen();
+
+};
+
+
+function openScreen() {
+
+    roomsTab.classList.remove("active");
+    screenTab.classList.add("active");
+
+    roomsSection.classList.remove("active");
+    screenSection.classList.add("active");
+
+}
+
+
+/* BOTÃO TRANSMITIR */
+
+document.getElementById(
+    "goScreen"
+).onclick = openScreen;
+
+
+document.getElementById(
+    "backRooms"
+).onclick = () => {
+
+    roomsTab.click();
+
+};
+
+
+/* SAIR */
+
+document.getElementById(
+    "leaveRoom"
+).onclick = () => {
+
+    socket.emit("leave-room");
+
+    stopSharing();
+
+    currentRoom = null;
+
+    room.classList.remove("show");
+
+    roomsTab.click();
+
+};
+
+
+/* INICIAR COMPARTILHAMENTO */
+
+document.getElementById(
+    "startShare"
+).onclick = async () => {
+
+    if (!currentRoom) return;
+
+
+    try {
+
+        localStream =
+            await navigator.mediaDevices
+                .getDisplayMedia({
+                    video: true,
+                    audio: false
+                });
+
+
+        localVideo.srcObject =
+            localStream;
+
+
+        localVideo.style.display =
+            "block";
+
+        placeholder.style.display =
+            "none";
+
+
+        document.getElementById(
+            "startShare"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "stopShare"
+        ).style.display = "inline-block";
+
+
+        streamStatus.textContent =
+            "● Você está transmitindo";
+
+        streamStatus.style.color =
+            "#46d889";
+
+
+        socket.emit("start-sharing");
+
+
+        localStream
+            .getVideoTracks()[0]
+            .onended = stopSharing;
+
+
+        /*
+         * Para cada membro da sala,
+         * cria uma conexão WebRTC.
+         */
+
+        currentRoom.members.forEach(
+            async member => {
+
+                if (member.id === socket.id) {
+                    return;
+                }
+
+                await createOfferFor(
+                    member.id
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        streamStatus.textContent =
+            "Não foi possível iniciar a transmissão.";
+
+    }
+
+};
+
+
+/* PARAR */
+
+document.getElementById(
+    "stopShare"
+).onclick = stopSharing;
+
+
+function stopSharing() {
+
+    if (localStream) {
+
+        localStream
+            .getTracks()
+            .forEach(track => track.stop());
+
+        localStream = null;
+    }
+
+
+    localVideo.srcObject = null;
+
+    localVideo.style.display =
+        "none";
+
+    placeholder.style.display =
+        "block";
+
+
+    document.getElementById(
+        "startShare"
+    ).style.display =
+        "inline-block";
+
+
+    document.getElementById(
+        "stopShare"
+    ).style.display =
+        "none";
+
+
+    streamStatus.textContent =
+        "Aguardando transmissão";
+
+    streamStatus.style.color =
+        "#777b8d";
+
+
+    peers.forEach(
+        peer => peer.close()
+    );
+
+    peers.clear();
+
+
+    socket.emit("stop-sharing");
+
+}
+
+
+/* ==========================
+   WEBRTC
+========================== */
+
+async function createPeer(targetId) {
+
+    if (peers.has(targetId)) {
+        return peers.get(targetId);
+    }
+
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+
+    peers.set(
+        targetId,
+        pc
+    );
+
+
+    if (localStream) {
+
+        localStream
+            .getTracks()
+            .forEach(track => {
+
+                pc.addTrack(
+                    track,
+                    localStream
+                );
+
+            });
+
+    }
+
+
+    pc.onicecandidate =
+        event => {
+
+            if (!event.candidate) return;
+
+            socket.emit(
+                "webrtc-ice-candidate",
+                {
+                    target: targetId,
+                    candidate: event.candidate
+                }
+            );
+
+        };
+
+
+    pc.ontrack =
+        event => {
+
+            remoteVideo.srcObject =
+                event.streams[0];
+
+            remoteVideo.style.display =
+                "block";
+
+            placeholder.style.display =
+                "none";
+
+            streamStatus.textContent =
+                "● Recebendo transmissão";
+
+            streamStatus.style.color =
+                "#46d889";
+
+        };
+
+
+    pc.onconnectionstatechange =
+        () => {
+
+            if (
+                pc.connectionState ===
+                "failed" ||
+                pc.connectionState ===
+                "closed"
+            ) {
+
+                peers.delete(targetId);
+
+            }
+
+        };
+
+
+    return pc;
+}
+
+
+/* OFERTA */
+
+async function createOfferFor(targetId) {
+
+    const pc =
+        await createPeer(targetId);
+
+
+    const offer =
+        await pc.createOffer();
+
+
+    await pc.setLocalDescription(
+        offer
+    );
+
+
+    socket.emit(
+        "webrtc-offer",
+        {
+            target: targetId,
+            offer
+        }
+    );
+
+}
+
+
+/* RECEBER OFERTA */
+
+socket.on(
+    "webrtc-offer",
+    async ({
+        from,
+        offer
+    }) => {
+
+        const pc =
+            await createPeer(from);
+
+
+        await pc.setRemoteDescription(
+            offer
+        );
+
+
+        const answer =
+            await pc.createAnswer();
+
+
+        await pc.setLocalDescription(
+            answer
+        );
+
+
+        socket.emit(
+            "webrtc-answer",
+            {
+                target: from,
+                answer
+            }
+        );
+
+    }
+);
+
+
+/* RECEBER RESPOSTA */
+
+socket.on(
+    "webrtc-answer",
+    async ({
+        from,
+        answer
+    }) => {
+
+        const pc =
+            peers.get(from);
+
+        if (!pc) return;
+
+        await pc.setRemoteDescription(
+            answer
+        );
+
+    }
+);
+
+
+/* ICE */
+
+socket.on(
+    "webrtc-ice-candidate",
+    async ({
+        from,
+        candidate
+    }) => {
+
+        const pc =
+            peers.get(from);
+
+        if (!pc) return;
+
+        try {
+
+            await pc.addIceCandidate(
+                candidate
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erro ICE:",
+                error
+            );
+
+        }
+
+    }
+);
+
+
+/* NOVO MEMBRO */
+
+socket.on(
+    "member-joined",
+    data => {
+
+        /*
+         * Se você é o transmissor,
+         * oferece a tela ao novo membro.
+         */
+
+        if (
+            localStream &&
+            currentRoom
+        ) {
+
+            createOfferFor(
+                data.id
+            );
+
+        }
+
+    }
+);
+
+
+/* TRANSMISSÃO INICIADA */
+
+socket.on(
+    "screen-sharing-started",
+    data => {
+
+        streamStatus.textContent =
+            "Conectando à transmissão...";
+
+        streamStatus.style.color =
+            "#ffc857";
+
+    }
+);
+
+
+/* TRANSMISSÃO PARADA */
+
+socket.on(
+    "screen-sharing-stopped",
+    () => {
+
+        remoteVideo.srcObject =
+            null;
+
+        remoteVideo.style.display =
+            "none";
+
+        placeholder.style.display =
+            "block";
+
+        streamStatus.textContent =
+            "A transmissão terminou.";
+
+        streamStatus.style.color =
+            "#777b8d";
+
+        peers.forEach(
+            peer => peer.close()
+        );
+
+        peers.clear();
+
+    }
+);
+
+
+/* NOVO DONO */
+
+socket.on(
+    "owner-changed",
+    data => {
+
+        showMessage(
+            "O dono da sala mudou.",
+            "success"
+        );
+
+    }
+);
+
+
+/* MENSAGENS */
+
+function showMessage(
+    text,
+    type
+) {
+
+    message.textContent =
+        text;
+
+    message.className =
+        "message show " + type;
+
+
+    setTimeout(
+        () => {
+
+            message.className =
+                "message";
+
+        },
+        3500
+    );
+
+}
+
+</script>
+
+</body>
+</html>
